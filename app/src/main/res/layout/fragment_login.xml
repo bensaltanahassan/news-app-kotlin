@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:id="@+id/loginButton"
-        android:text="Login"
+        android:text="S'identifier"
         android:textSize="18sp"
         android:layout_marginTop="30dp"
         android:backgroundTint="@color/purple"
@@ -90,7 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="S'enregistrer"
+            android:text="S'inscrire"
             android:textSize="14sp"
             android:textStyle="bold"
             android:textAlignment="center"
@@ -101,4 +101,17 @@
             android:onClick="onSignUpClick"/>
 
     </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="Mot de passe oublié"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:id="@+id/forgotPasswordButton"
+        android:textColor="@color/purple"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        android:onClick="onForgotPasswordClick"/>
 </LinearLayout>
