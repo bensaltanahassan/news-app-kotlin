@@ -1,10 +1,20 @@
 package com.example.newsapp
 
+import Crud
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.navigation.fragment.findNavController
+import com.example.newsapp.databinding.FragmentSignUpBinding
+import com.example.newsapp.databinding.FragmentVerifyCodeBinding
+import okhttp3.Call
+import okhttp3.Response
+import okio.IOException
+import org.json.JSONObject
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,43 +27,65 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class verifyCodeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    private lateinit var _binding : FragmentVerifyCodeBinding
+    private val binding get() = _binding!!
+    val crud = Crud()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_verify_code, container, false)
+        _binding = FragmentVerifyCodeBinding.inflate(inflater, container, false)
+        binding.verifyCodeButton.setOnClickListener{
+            val num1 = binding.otp1.text.toString()
+            val num2 = binding.otp2.text.toString()
+            val num3 = binding.otp3.text.toString()
+            val num4 = binding.otp4.text.toString()
+            val num5 = binding.otp5.text.toString()
+            val concatenatedNumber = "$num1$num2$num3$num4$num5"
+            val otpNumber = concatenatedNumber.toInt()
+            postVerifyCode(otpNumber)
+        }
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment verifyCodeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            verifyCodeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun postVerifyCode(otpNumber:Int){
+        val url : String = "https://news-api-8kaq.onrender.com/api/auth/verifycode"
+        val json = """
+            {
+                "email": "hasnaanas230@gmail.com",
+                "verifyCode": $otpNumber
+            }
+        """.trimIndent()
+
+
+        crud.post(url,json,object: Crud.ResponseCallback{
+            override fun onResponse(call: Call, response: Response) {
+                val responseData = response.body?.string()
+                val jsonresponse = JSONObject(responseData)
+                Log.d("POST Response:", "$responseData")
+                if(!response.isSuccessful){
+                    val message = jsonresponse.getString("message")
+                    requireActivity().runOnUiThread{
+
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                    }
+
+                }else{
+                    requireActivity().runOnUiThread{
+
+                        findNavController().navigate(R.id.action_verifyCodeFragment_to_loginFragment)
+                    }
+
                 }
             }
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("Request failed:", "${e.message}")
+
+            }
+        }
+        )
     }
+
+
 }
