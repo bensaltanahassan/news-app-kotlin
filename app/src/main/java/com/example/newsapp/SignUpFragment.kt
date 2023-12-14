@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.newsapp.databinding.FragmentSignUpBinding
 import okhttp3.Call
 import okhttp3.Response
@@ -34,7 +35,7 @@ class SignUpFragment : Fragment() {
             if(password == confirmPassword){
                 postLogin(firstName,lastName,email,password)
             }else{
-                binding.errorTextSignUp.text="Les deux mot de passe ne se rassemblent pas"
+                Toast.makeText(requireContext(), "Passwords doesnt match !", Toast.LENGTH_LONG).show()
             }
 
         }
@@ -61,7 +62,8 @@ class SignUpFragment : Fragment() {
                 if(!response.isSuccessful){
                     val message = jsonresponse.getString("message")
                     requireActivity().runOnUiThread{
-                        binding.errorTextSignUp.text=message
+
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
                     }
 
                 }

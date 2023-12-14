@@ -101,8 +101,7 @@
             android:id="@+id/signupButton"
             android:textColor="@color/purple"
             android:layout_marginBottom="20dp"
-            android:clickable="true"
-            android:onClick="onSignUpClick"/>
+            android:clickable="true"/>
 
     </LinearLayout>
     <TextView

@@ -35,6 +35,9 @@ class LoginFragment : Fragment() {
             findNavController().navigate(R.id.action_loginFragment_to_forgotPasswordFragment);
 
         }
+        binding.signupButton.setOnClickListener{
+            findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
+        }
         return binding.root
     }
     private fun postLogin(email : String, password : String){
