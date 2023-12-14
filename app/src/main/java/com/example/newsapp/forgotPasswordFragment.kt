@@ -2,12 +2,15 @@ package com.example.newsapp
 
 import Crud
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.example.newsapp.databinding.FragmentForgotPasswordBinding
 import okhttp3.Call
 import okhttp3.Response
@@ -48,7 +51,11 @@ class forgotPasswordFragment : Fragment() {
                     val message : String = "Un code de verification a été envoyé a $email"
                     requireActivity().runOnUiThread {
                         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            findNavController().navigate(R.id.action_forgotPasswordFragment_to_verifyCodeFragment);
+                        }, 2000)
                     }
+
                 }else{
                     val message:String = jsonResponse.getString("message")
                     requireActivity().runOnUiThread {
