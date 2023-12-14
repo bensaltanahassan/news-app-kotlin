@@ -7,8 +7,8 @@ class Crud {
     private val client = OkHttpClient()
 
     interface ResponseCallback {
-        fun onResponse(response: String)
-        fun onFailure(errorMessage: String)
+        fun onResponse(call: Call, response: Response)
+        fun onFailure(call: Call, e: IOException)
     }
 
     fun get(url: String, callback: ResponseCallback) {
@@ -18,16 +18,11 @@ class Crud {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body?.string()
-                if (responseData != null) {
-                    callback.onResponse(responseData)
-                } else {
-                    callback.onFailure("Empty response")
-                }
+                callback.onResponse(call, response)
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                callback.onFailure(e.message ?: "Unknown failure")
+                callback.onFailure(call,e)
             }
         })
     }
@@ -41,16 +36,11 @@ class Crud {
 
         client.newCall(postRequest).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body?.string()
-                if (responseData != null) {
-                    callback.onResponse(responseData)
-                } else {
-                    callback.onFailure("Empty response")
-                }
+                callback.onResponse(call, response)
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                callback.onFailure(e.message ?: "Unknown failure")
+                callback.onFailure(call,e)
             }
         })
     }
@@ -64,16 +54,11 @@ class Crud {
 
         client.newCall(putRequest).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body?.string()
-                if (responseData != null) {
-                    callback.onResponse(responseData)
-                } else {
-                    callback.onFailure("Empty response")
-                }
+                callback.onResponse(call, response)
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                callback.onFailure(e.message ?: "Unknown failure")
+                callback.onFailure(call,e)
             }
         })
     }
@@ -86,16 +71,11 @@ class Crud {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body?.string()
-                if (responseData != null) {
-                    callback.onResponse(responseData)
-                } else {
-                    callback.onFailure("Empty response")
-                }
+                callback.onResponse(call, response)
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                callback.onFailure(e.message ?: "Unknown failure")
+                callback.onFailure(call,e)
             }
         })
     }
