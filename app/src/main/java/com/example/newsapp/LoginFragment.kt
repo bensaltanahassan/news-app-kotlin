@@ -1,5 +1,6 @@
 package com.example.newsapp
 
+import Crud
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -21,7 +22,7 @@ import okio.IOException
 class LoginFragment : Fragment() {
     private lateinit var _binding : FragmentLoginBinding
     private val binding get() = _binding!!
-    private val client = OkHttpClient()
+    val crud = Crud()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,13 +48,8 @@ class LoginFragment : Fragment() {
             }
         """.trimIndent()
 
-        val postBody = json.toRequestBody("application/json".toMediaTypeOrNull())
-        val postRequest = Request.Builder()
-            .url(loginUrl)
-            .post(postBody)
-            .build()
 
-        client.newCall(postRequest).enqueue(object : Callback {
+        crud.post(loginUrl,json,object: Crud.ResponseCallback{
             override fun onResponse(call: Call, response: Response) {
                 val responseData = response.body?.string()
                 Log.d("POST Response:", "$responseData")
@@ -61,15 +57,8 @@ class LoginFragment : Fragment() {
             override fun onFailure(call: Call, e: IOException) {
                 Log.d("Request failed:", "${e.message}")
             }
-        })
-
+            }
+        )
     }
-
-
-
-    companion object {
-        val MEDIA_TYPE_MARKDOWN = "text/x-markdown; charset=utf-8".toMediaType()
-    }
-
 
 }
