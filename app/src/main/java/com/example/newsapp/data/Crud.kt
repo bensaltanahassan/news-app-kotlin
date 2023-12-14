@@ -44,7 +44,6 @@ class Crud {
             }
         })
     }
-
     fun update(url: String, jsonBody: String, callback: ResponseCallback) {
         val putBody = jsonBody.toRequestBody("application/json".toMediaTypeOrNull())
         val putRequest = Request.Builder()
@@ -56,7 +55,6 @@ class Crud {
             override fun onResponse(call: Call, response: Response) {
                 callback.onResponse(call, response)
             }
-
             override fun onFailure(call: Call, e: IOException) {
                 callback.onFailure(call,e)
             }

@@ -35,7 +35,7 @@ class forgotPasswordFragment : Fragment() {
         return return binding.root
     }
 
-    fun onClickForgetPasswordBtn(email:String){
+    private fun onClickForgetPasswordBtn(email:String){
         val forgetPasswordUrl = "https://news-api-8kaq.onrender.com/api/auth/forgetpassword"
         val json = """
             {
@@ -52,7 +52,8 @@ class forgotPasswordFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
                         Handler(Looper.getMainLooper()).postDelayed({
-                            findNavController().navigate(R.id.action_forgotPasswordFragment_to_verifyCodeFragment);
+                            val action = forgotPasswordFragmentDirections.actionForgotPasswordFragmentToVerifyCodeFragment(email)
+                            findNavController().navigate(action);
                         }, 2000)
                     }
 
