@@ -7,8 +7,10 @@
     tools:context=".LoginFragment"
     android:orientation="vertical"
     android:gravity="center"
-    android:paddingTop="120dp"
-    android:background="@drawable/loginbkg">
+    android:paddingTop="140dp"
+    android:background="@drawable/loginbkg"
+    tools:viewBindingIgnore="false"
+    >
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -42,6 +44,7 @@
         android:drawablePadding="8dp"
         android:hint="Email"
         android:padding="8dp"
+        android:inputType="textEmailAddress"
         android:textColor="@color/black"
         android:textColorHighlight="@color/cardview_dark_background"
         android:layout_marginTop="40dp"/>

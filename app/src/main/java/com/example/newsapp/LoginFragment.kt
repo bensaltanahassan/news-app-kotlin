@@ -1,59 +1,83 @@
 package com.example.newsapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.newsapp.databinding.FragmentLoginBinding
+import fuel.Fuel
+import fuel.post
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import okio.IOException
+import org.json.JSONObject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LoginFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    private lateinit var _binding : FragmentLoginBinding
+    private val binding get() = _binding!!
+    private val client = OkHttpClient()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false)
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        binding.loginButton.setOnClickListener {
+            val email: String = binding.username.text.toString();
+            val passowrd: String = binding.password.text.toString()
+            CoroutineScope(Dispatchers.Main).launch {
+                postLogin(email,passowrd)
+            }
+
+        }
+        return binding.root
+    }
+    fun postLogin(email : String , password : String){
+        val loginUrl : String = "https://news-api-8kaq.onrender.com/api/auth/login"
+        val json = """
+            {
+                "email": "$email",
+                "password": "$password"
+            }
+        """.trimIndent()
+
+        val postBody = json.toRequestBody("application/json".toMediaTypeOrNull())
+        val postRequest = Request.Builder()
+            .url(loginUrl)
+            .post(postBody)
+            .build()
+
+        client.newCall(postRequest).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+                val responseData = response.body?.string()
+                Log.d("POST Response:", "$responseData")
+            }
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("Request failed:", "${e.message}")
+            }
+        })
+
     }
 
+
+
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment LoginFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            LoginFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        val MEDIA_TYPE_MARKDOWN = "text/x-markdown; charset=utf-8".toMediaType()
     }
+
+
 }
