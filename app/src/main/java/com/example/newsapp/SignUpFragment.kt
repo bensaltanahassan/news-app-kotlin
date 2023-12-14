@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.example.newsapp.databinding.FragmentSignUpBinding
 import okhttp3.Call
 import okhttp3.Response
@@ -33,7 +34,7 @@ class SignUpFragment : Fragment() {
             val password = binding.passwordSignUp.text.toString()
             val confirmPassword = binding.confirmPasswordSignUp.text.toString()
             if(password == confirmPassword){
-                postLogin(firstName,lastName,email,password)
+                postSignUp(firstName,lastName,email,password)
             }else{
                 Toast.makeText(requireContext(), "Passwords doesnt match !", Toast.LENGTH_LONG).show()
             }
@@ -42,7 +43,7 @@ class SignUpFragment : Fragment() {
         return binding.root
     }
 
-    private fun postLogin(firstName : String ,lastName : String,email : String, password : String){
+    private fun postSignUp(firstName : String ,lastName : String,email : String, password : String){
         val loginUrl : String = "https://news-api-8kaq.onrender.com/api/auth/signup"
         val json = """
             {
@@ -64,6 +65,12 @@ class SignUpFragment : Fragment() {
                     requireActivity().runOnUiThread{
 
                         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                    }
+
+                }else{
+                    requireActivity().runOnUiThread{
+
+                        findNavController().navigate(R.id.action_signUpFragment_to_verifyCodeFragment)
                     }
 
                 }
