@@ -7,14 +7,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.newsapp.databinding.FragmentLoginBinding
 import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okio.IOException
 
@@ -34,7 +29,10 @@ class LoginFragment : Fragment() {
             val password: String = binding.password.text.toString()
 
             postLogin(email,password)
+        }
 
+        binding.forgotPasswordButton.setOnClickListener{
+            findNavController().navigate(R.id.action_loginFragment_to_forgotPasswordFragment);
 
         }
         return binding.root
@@ -47,8 +45,6 @@ class LoginFragment : Fragment() {
                 "password": "$password"
             }
         """.trimIndent()
-
-
         crud.post(loginUrl,json,object: Crud.ResponseCallback{
             override fun onResponse(call: Call, response: Response) {
                 val responseData = response.body?.string()
