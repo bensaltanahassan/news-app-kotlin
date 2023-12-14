@@ -7,23 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.newsapp.databinding.FragmentLoginBinding
-import fuel.Fuel
-import fuel.post
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okio.IOException
-import org.json.JSONObject
 
 
 class LoginFragment : Fragment() {
@@ -38,15 +30,15 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         binding.loginButton.setOnClickListener {
             val email: String = binding.username.text.toString();
-            val passowrd: String = binding.password.text.toString()
-            CoroutineScope(Dispatchers.Main).launch {
-                postLogin(email,passowrd)
-            }
+            val password: String = binding.password.text.toString()
+
+            postLogin(email,password)
+
 
         }
         return binding.root
     }
-    fun postLogin(email : String , password : String){
+    private fun postLogin(email : String, password : String){
         val loginUrl : String = "https://news-api-8kaq.onrender.com/api/auth/login"
         val json = """
             {
