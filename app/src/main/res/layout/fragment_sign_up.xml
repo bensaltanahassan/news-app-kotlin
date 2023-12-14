@@ -74,19 +74,7 @@
                 android:textColorHighlight="@color/cardview_dark_background"
                 android:layout_marginTop="20dp"/>
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:id="@+id/phoneSignUp"
-                android:background="@drawable/custom_edittext"
-                android:drawableLeft="@drawable/baseline_phone_24"
-                android:drawablePadding="8dp"
-                android:hint="Téléphone"
-                android:padding="12dp"
-                android:inputType="phone"
-                android:textColor="@color/black"
-                android:textColorHighlight="@color/cardview_dark_background"
-                android:layout_marginTop="20dp"/>
+
 
 
             <EditText
@@ -128,6 +116,19 @@
                 android:layout_marginTop="30dp"
                 android:backgroundTint="@color/purple"
                 app:cornerRadius = "20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textColor="@color/red"
+                android:textStyle="bold"
+                android:id="@+id/errorTextSignUp"
+                />
+
             
         </LinearLayout>
 
