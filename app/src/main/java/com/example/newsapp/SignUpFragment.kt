@@ -36,6 +36,7 @@ class SignUpFragment : Fragment() {
             if(password == confirmPassword){
                 postSignUp(firstName,lastName,email,password)
             }else{
+
                 Toast.makeText(requireContext(), "Passwords doesnt match !", Toast.LENGTH_LONG).show()
             }
 
@@ -69,8 +70,8 @@ class SignUpFragment : Fragment() {
 
                 }else{
                     requireActivity().runOnUiThread{
-
-                        findNavController().navigate(R.id.action_signUpFragment_to_verifyCodeFragment)
+                        val action = SignUpFragmentDirections.actionSignUpFragmentToVerifyCodeFragment(email,"signUp")
+                        findNavController().navigate(action)
                     }
 
                 }

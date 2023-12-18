@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.newsapp.databinding.FragmentChangePasswordBinding
 import com.example.newsapp.databinding.FragmentForgotPasswordBinding
 import okhttp3.Call
@@ -20,10 +21,12 @@ import org.json.JSONObject
 
 
 class changePasswordFragment : Fragment() {
+    val args: changePasswordFragmentArgs by navArgs()
 
     private lateinit var _binding : FragmentChangePasswordBinding
     private val binding get() = _binding!!
     val crud = Crud()
+    private  lateinit var email: String;
 
 
 
@@ -31,12 +34,12 @@ class changePasswordFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        email = args.email!!
         _binding = FragmentChangePasswordBinding.inflate(inflater, container, false)
         binding.changePasswordButton.setOnClickListener {
             val newPassword: String = binding.password.text.toString();
             val confirmPassword:String  = binding.confirmPassword.text.toString();
             if (newPassword==confirmPassword){
-                val email:String = "hasnaanas@gmail.com"
                 onClickForgetPasswordBtn(newPassword,email)
             }else{
                 val message : String = "Validation err"
@@ -65,6 +68,9 @@ class changePasswordFragment : Fragment() {
                     val message : String = "Votre mot de passe a été changé avec succes"
                     requireActivity().runOnUiThread {
                         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            findNavController().navigate(R.id.action_changePasswordFragment_to_loginFragment)
+                        }, 2000)
                     }
                 }else{
                     val message:String = jsonResponse.getString("message")

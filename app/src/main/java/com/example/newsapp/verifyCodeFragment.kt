@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.newsapp.databinding.FragmentSignUpBinding
 import com.example.newsapp.databinding.FragmentVerifyCodeBinding
 import okhttp3.Call
@@ -16,25 +17,19 @@ import okhttp3.Response
 import okio.IOException
 import org.json.JSONObject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [verifyCodeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class verifyCodeFragment : Fragment() {
+    val args: verifyCodeFragmentArgs by navArgs()
 
     private lateinit var _binding : FragmentVerifyCodeBinding
+    private lateinit var type:String;
     private val binding get() = _binding!!
     val crud = Crud()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val email: String? = args.email
+        type = args.type!!
         _binding = FragmentVerifyCodeBinding.inflate(inflater, container, false)
         binding.verifyCodeButton.setOnClickListener{
             val num1 = binding.otp1.text.toString()
@@ -44,16 +39,16 @@ class verifyCodeFragment : Fragment() {
             val num5 = binding.otp5.text.toString()
             val concatenatedNumber = "$num1$num2$num3$num4$num5"
             val otpNumber = concatenatedNumber.toInt()
-            postVerifyCode(otpNumber)
+            postVerifyCode(otpNumber,email!!)
         }
         return binding.root
     }
 
-    private fun postVerifyCode(otpNumber:Int){
+    private fun postVerifyCode(otpNumber:Int,email:String){
         val url : String = "https://news-api-8kaq.onrender.com/api/auth/verifycode"
         val json = """
             {
-                "email": "hasnaanas230@gmail.com",
+                "email": "$email",
                 "verifyCode": $otpNumber
             }
         """.trimIndent()
@@ -73,8 +68,14 @@ class verifyCodeFragment : Fragment() {
 
                 }else{
                     requireActivity().runOnUiThread{
+                        if (type=="forgetPassword"){
+                            val action = verifyCodeFragmentDirections.actionVerifyCodeFragmentToChangePasswordFragment(email)
+                            findNavController().navigate(action)
+                        }else{
+                            findNavController().navigate(R.id.action_verifyCodeFragment_to_loginFragment)
+                        }
 
-                        findNavController().navigate(R.id.action_verifyCodeFragment_to_loginFragment)
+
                     }
 
                 }

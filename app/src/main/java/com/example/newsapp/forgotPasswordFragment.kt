@@ -52,7 +52,7 @@ class forgotPasswordFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
                         Handler(Looper.getMainLooper()).postDelayed({
-                            val action = forgotPasswordFragmentDirections.actionForgotPasswordFragmentToVerifyCodeFragment(email)
+                            val action = forgotPasswordFragmentDirections.actionForgotPasswordFragmentToVerifyCodeFragment(email,"forgetPassword")
                             findNavController().navigate(action);
                         }, 2000)
                     }
