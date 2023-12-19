@@ -9,14 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBindings
 import com.example.newsapp.adapters.NewsAdapter
-import com.example.newsapp.databinding.FragmentChangePasswordBinding
 import com.example.newsapp.databinding.FragmentHomeBinding
-import com.example.newsapp.databinding.FragmentLoginBinding
-import com.example.newsapp.models.New
+import com.example.newsapp.models.Newss
 
 class HomeFragment : Fragment() {
     private lateinit var _binding : FragmentHomeBinding
@@ -24,7 +22,7 @@ class HomeFragment : Fragment() {
     private lateinit var toolbar : Toolbar
 
     private lateinit var newRecyclerView: RecyclerView
-    private lateinit var newArrayList: ArrayList<New>
+    private lateinit var newssArrayList: ArrayList<Newss>
     lateinit var imageIds : Array<Int>
     lateinit var headings : Array<String>
 
@@ -61,7 +59,7 @@ class HomeFragment : Fragment() {
         newRecyclerView = binding.recyclerViewNews
         newRecyclerView.layoutManager = LinearLayoutManager(context)
         newRecyclerView.setHasFixedSize(true)
-        newArrayList = arrayListOf<New>()
+        newssArrayList = arrayListOf<Newss>()
         getAllNews()
         return binding.root
     }
@@ -69,10 +67,10 @@ class HomeFragment : Fragment() {
 
     private fun getAllNews() {
         for (i in imageIds.indices){
-            val news = New(imageIds[0],headings[0])
-            newArrayList.add(news)
+            val newss = Newss(imageIds[0],headings[0])
+            newssArrayList.add(newss)
         }
-        newRecyclerView.adapter  = NewsAdapter(newArrayList)
+        newRecyclerView.adapter  = NewsAdapter(newssArrayList,findNavController())
     }
 
 }

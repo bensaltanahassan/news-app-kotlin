@@ -97,6 +97,10 @@
         <action
             android:id="@+id/action_homeFragment_to_savedArticlesFragment2"
             app:destination="@id/savedArticlesFragment" />
+        <argument
+            android:name="News"
+            app:argType="com.example.newsapp.models.Newss"
+            />
     </fragment>
     <fragment
         android:id="@+id/articleDetailsFragment"
