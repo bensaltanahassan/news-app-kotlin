@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".ArticleDetailsFragment">
+    tools:context=".ArticleDetailsFragment"
+    android:background="@color/white">
 
     <include
         layout="@layout/appbar"

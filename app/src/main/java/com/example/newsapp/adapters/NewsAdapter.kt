@@ -26,7 +26,7 @@ class NewsAdapter (private val newsList: ArrayList<New>): RecyclerView.Adapter<N
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = newsList[position]
-        holder.image.setImageResource(currentItem.titleImage);
+        holder.image.setImageResource(currentItem.imageId);
         holder.title.text= currentItem.title
         val bookmarkButton = holder.bookmarkButtonNew
         bookmarkButton.setOnClickListener {
