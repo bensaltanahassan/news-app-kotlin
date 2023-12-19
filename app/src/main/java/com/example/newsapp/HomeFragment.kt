@@ -38,7 +38,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        toolbar = binding.root.findViewById<Toolbar>(R.id.myToolBar)
+        toolbar = binding.appBarHome.myToolBar
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
