@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SavedArticlesFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    tools:context=".SavedArticlesFragment"
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+    <include
+        android:id="@+id/appBarHome"
+        layout="@layout/appbar"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewSavedNews"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="50dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="8dp"
+        android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@drawable/custom_edittext"
+        android:scrollbarSize="10dp"
+        android:scrollbarStyle="outsideOverlay"
+        />
 
-</FrameLayout>
+</LinearLayout>
