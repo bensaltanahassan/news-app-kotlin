@@ -48,14 +48,16 @@ class NewsAdapter (
                     holder.image.setImageDrawable(result)
                 },
                 onError = { _ ->
-                    Log.d("Error", "Error loading image")
+                    holder.progressBar.visibility = View.GONE
+                    holder.image.visibility = View.VISIBLE
+                    holder.image.setImageDrawable(ContextCompat.getDrawable(holder.image.context,R.drawable.baseline_error_outline_24))
                 }
             ).build()
         coil.ImageLoader(holder.image.context).enqueue(request)
 
 
         holder.title.text= currentItem.title
-        holder.date.text = "April 12, 2021"
+        holder.date.text = currentItem.createdAt
         holder.author.text = currentItem.author
 
         val bookmarkButton = holder.bookmarkButtonNew

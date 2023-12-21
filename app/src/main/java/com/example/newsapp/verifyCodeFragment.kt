@@ -53,8 +53,8 @@ class verifyCodeFragment : Fragment() {
             }
         """.trimIndent()
 
-
-        crud.post(url,json,object: Crud.ResponseCallback{
+        val token:String = ""
+        crud.post(url,json,token,object: Crud.ResponseCallback{
             override fun onResponse(call: Call, response: Response) {
                 val responseData = response.body?.string()
                 val jsonresponse = JSONObject(responseData)

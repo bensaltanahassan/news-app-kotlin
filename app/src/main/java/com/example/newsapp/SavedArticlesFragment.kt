@@ -44,24 +44,13 @@ class SavedArticlesFragment : Fragment() {
         newRecyclerView = binding.recyclerViewSavedNews
         newRecyclerView.layoutManager = LinearLayoutManager(context)
         newRecyclerView.setHasFixedSize(true)
-        newArrayList = arrayListOf<News>()
+
         getAllSavedNews()
 
         return binding.root
     }
     private fun getAllSavedNews() {
-        for (
-        i in 1..10
-        ){
-            val newss = News(
-                Image("",""),
-                "",
-                "",
-                "",
-                "",
-            )
-            newArrayList.add(newss)
-        }
+        newArrayList = arrayListOf<News>()
         newRecyclerView.adapter  = NewsAdapter(newArrayList,findNavController())
     }
 }

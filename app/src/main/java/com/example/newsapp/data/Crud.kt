@@ -11,12 +11,21 @@ class Crud {
         fun onFailure(call: Call, e: IOException)
     }
 
-    fun get(url: String, callback: ResponseCallback) {
-        val request = Request.Builder()
+    fun get(url: String,jsonBody: String,authToken: String?, callback: ResponseCallback) {
+        val getBody = jsonBody.toRequestBody("application/json".toMediaTypeOrNull())
+        val requestBuilder  = Request.Builder()
             .url(url)
-            .build()
+            .get()
 
-        client.newCall(request).enqueue(object : Callback {
+        if(authToken != null){
+            val headerValue = "Bearer $authToken"
+            requestBuilder.addHeader("Authorization", headerValue)
+        }
+
+
+        val getRequest = requestBuilder.build()
+
+        client.newCall(getRequest).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 callback.onResponse(call, response)
             }
@@ -27,12 +36,19 @@ class Crud {
         })
     }
 
-    fun post(url: String, jsonBody: String, callback: ResponseCallback) {
+    fun post(url: String, jsonBody: String,authToken: String?, callback: ResponseCallback) {
         val postBody = jsonBody.toRequestBody("application/json".toMediaTypeOrNull())
-        val postRequest = Request.Builder()
+        val requestBuilder  = Request.Builder()
             .url(url)
             .post(postBody)
-            .build()
+
+        if(authToken != null){
+            val headerValue = "Bearer $authToken"
+            requestBuilder.addHeader("Authorization", headerValue)
+        }
+
+        val postRequest = requestBuilder.build()
+
 
         client.newCall(postRequest).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
@@ -44,12 +60,19 @@ class Crud {
             }
         })
     }
-    fun update(url: String, jsonBody: String, callback: ResponseCallback) {
+    fun update(url: String, jsonBody: String,authToken: String?, callback: ResponseCallback) {
         val putBody = jsonBody.toRequestBody("application/json".toMediaTypeOrNull())
-        val putRequest = Request.Builder()
+        val requestBuilder  = Request.Builder()
             .url(url)
             .put(putBody)
-            .build()
+
+        if(authToken != null){
+            val headerValue = "Bearer $authToken"
+            requestBuilder.addHeader("Authorization", headerValue)
+        }
+
+        val putRequest = requestBuilder.build()
+
 
         client.newCall(putRequest).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
@@ -61,13 +84,19 @@ class Crud {
         })
     }
 
-    fun delete(url: String, callback: ResponseCallback) {
-        val request = Request.Builder()
+    fun delete(url: String,authToken: String?, callback: ResponseCallback) {
+        val requestBuilder  = Request.Builder()
             .url(url)
             .delete()
-            .build()
 
-        client.newCall(request).enqueue(object : Callback {
+        if(authToken != null){
+            val headerValue = "Bearer $authToken"
+            requestBuilder.addHeader("Authorization", headerValue)
+        }
+
+        val deleteRequest = requestBuilder.build()
+
+        client.newCall(deleteRequest).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 callback.onResponse(call, response)
             }

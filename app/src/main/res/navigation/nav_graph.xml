@@ -102,7 +102,11 @@
         android:id="@+id/articleDetailsFragment"
         android:name="com.example.newsapp.ArticleDetailsFragment"
         android:label="fragment_article_details"
-        tools:layout="@layout/fragment_article_details" />
+        tools:layout="@layout/fragment_article_details" >
+        <argument
+            android:name="News"
+            app:argType="com.example.newsapp.models.News" />
+    </fragment>
     <fragment
         android:id="@+id/savedArticlesFragment"
         android:name="com.example.newsapp.SavedArticlesFragment"

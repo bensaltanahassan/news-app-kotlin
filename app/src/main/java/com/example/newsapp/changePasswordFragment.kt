@@ -59,7 +59,8 @@ class changePasswordFragment : Fragment() {
                 "password": "$newPassword"
             }
         """.trimIndent()
-        crud.post(changePasswordUrl,json,object: Crud.ResponseCallback{
+        val token:String = ""
+        crud.post(changePasswordUrl,json,token,object: Crud.ResponseCallback{
             override fun onResponse(call: Call, response: Response) {
                 val responseData = response.body?.string()
                 val jsonResponse = JSONObject(responseData)

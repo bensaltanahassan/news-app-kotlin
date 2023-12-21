@@ -42,7 +42,8 @@ class forgotPasswordFragment : Fragment() {
                 "email": "$email"
             }
         """.trimIndent()
-        crud.post(forgetPasswordUrl,json,object: Crud.ResponseCallback{
+        val token:String = ""
+        crud.post(forgetPasswordUrl,json,token,object: Crud.ResponseCallback{
             override fun onResponse(call: Call, response: Response) {
                 val responseData = response.body?.string()
                 val jsonResponse = JSONObject(responseData)

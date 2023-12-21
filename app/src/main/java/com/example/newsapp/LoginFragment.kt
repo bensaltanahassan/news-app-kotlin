@@ -48,7 +48,8 @@ class LoginFragment : Fragment() {
                 "password": "$password"
             }
         """.trimIndent()
-        crud.post(loginUrl,json,object: Crud.ResponseCallback{
+        val token:String = ""
+        crud.post(loginUrl,json,token,object: Crud.ResponseCallback{
             override fun onResponse(call: Call, response: Response) {
                 val responseData = response.body?.string()
                 Log.d("POST Response:", "$responseData")

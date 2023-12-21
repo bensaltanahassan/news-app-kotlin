@@ -13,7 +13,11 @@
        layout="@layout/appbar"/>
 
 
+
+
+
    <androidx.recyclerview.widget.RecyclerView
+       android:visibility="gone"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
          android:id="@+id/recyclerViewCategory"
@@ -22,7 +26,15 @@
             android:paddingHorizontal="8dp"
             />
 
+   <ProgressBar
+       android:layout_width="100dp"
+       android:layout_height="100dp"
+       android:id="@+id/progressBarHome"
+       android:layout_gravity="center"
+       android:layout_marginTop="200dp" />
+
    <androidx.recyclerview.widget.RecyclerView
+       android:visibility="gone"
        android:id="@+id/recyclerViewNews"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"

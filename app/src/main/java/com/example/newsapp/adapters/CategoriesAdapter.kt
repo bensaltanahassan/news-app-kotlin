@@ -16,7 +16,7 @@ import kotlin.reflect.KFunction0
 
 class CategoriesAdapter(
     private val categoryList: ArrayList<Category>,
-    private val onCLickCategory: (Category) -> Unit,
+    private val onClickCategory: (Category) -> Unit,
     private var currentCategory: Category?
 
 ): RecyclerView.Adapter<CategoriesAdapter.MyViewHolder>(){
@@ -43,7 +43,7 @@ class CategoriesAdapter(
         holder.itemView.setOnClickListener {
             if (currentItem != currentCategory) {
                 currentCategory = currentItem
-
+                onClickCategory(currentItem)
                 notifyDataSetChanged()
             }
         }
