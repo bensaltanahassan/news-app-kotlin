@@ -6,6 +6,7 @@
     tools:context=".SavedArticlesFragment"
     android:orientation="vertical"
     android:background="@color/white"
+
     >
     <include
         android:id="@+id/appBarHome"

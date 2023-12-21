@@ -11,53 +11,16 @@
    <include
          android:id="@+id/appBarHome"
        layout="@layout/appbar"/>
-   <ScrollView
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content">
-      <LinearLayout
-          android:paddingHorizontal="8dp"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          android:layout_marginTop="12dp"
-          >
-         <TextView
-             android:background="@drawable/custom_category"
-             android:layout_width="wrap_content"
-             android:paddingHorizontal="20dp"
-             android:paddingVertical="5dp"
-             android:layout_marginHorizontal="5dp"
-             android:layout_height="wrap_content"
-             android:text="Sport"
-             android:textSize="20sp"
-             android:textColor="@color/black"
-             />
-         <TextView
-             android:background="@drawable/custom_category"
-             android:layout_width="wrap_content"
-             android:paddingHorizontal="20dp"
-             android:paddingVertical="5dp"
-             android:layout_marginHorizontal="5dp"
-             android:layout_height="wrap_content"
-             android:text="Sport"
-             android:textSize="20sp"
-             android:textColor="@color/black"
-             />
-         <TextView
-             android:background="@drawable/custom_category"
-             android:layout_width="wrap_content"
-             android:paddingHorizontal="20dp"
-             android:paddingVertical="5dp"
-             android:layout_marginHorizontal="5dp"
-             android:layout_height="wrap_content"
-             android:text="Sport"
-             android:textSize="20sp"
-             android:textColor="@color/black"
-             />
 
 
-      </LinearLayout>
-   </ScrollView>
+   <androidx.recyclerview.widget.RecyclerView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+         android:id="@+id/recyclerViewCategory"
+         android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:paddingHorizontal="8dp"
+            />
 
    <androidx.recyclerview.widget.RecyclerView
        android:id="@+id/recyclerViewNews"
@@ -67,10 +30,6 @@
        android:layout_marginBottom="50dp"
        android:paddingHorizontal="8dp"
        android:paddingVertical="8dp"
-       android:scrollbars="vertical"
-       android:scrollbarThumbVertical="@drawable/custom_edittext"
-       android:scrollbarSize="10dp"
-       android:scrollbarStyle="outsideOverlay"
        />
 
 

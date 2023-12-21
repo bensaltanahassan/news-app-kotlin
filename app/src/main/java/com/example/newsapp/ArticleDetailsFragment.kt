@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.navArgs
 import com.example.newsapp.databinding.FragmentArticleDetailsBinding
-import com.example.newsapp.models.Newss
+import com.example.newsapp.models.News
 
 class ArticleDetailsFragment : Fragment() {
     private lateinit var _binding : FragmentArticleDetailsBinding
@@ -20,7 +20,7 @@ class ArticleDetailsFragment : Fragment() {
 
     private lateinit var toolbar : Toolbar
     val args: ArticleDetailsFragmentArgs by navArgs()
-    private lateinit var newss:Newss
+    private lateinit var news:News
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_appbar_newsdetail, menu)
@@ -30,8 +30,8 @@ class ArticleDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentArticleDetailsBinding.inflate(inflater, container, false)
-        newss = args.news
-        Log.d("New Name",newss.title)
+        news = args.news
+        Log.d("New Name",news.title)
         toolbar = binding.appbarNewsDetail.myToolBar
         toolbar.title = "Article Details"
         setHasOptionsMenu(true)

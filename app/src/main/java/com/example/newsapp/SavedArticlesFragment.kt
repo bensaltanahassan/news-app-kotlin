@@ -9,12 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.newsapp.adapters.CategoriesAdapter
 import com.example.newsapp.adapters.NewsAdapter
-import com.example.newsapp.databinding.FragmentHomeBinding
 import com.example.newsapp.databinding.FragmentSavedArticlesBinding
-import com.example.newsapp.models.New
+import com.example.newsapp.models.Image
+import com.example.newsapp.models.News
 
 class SavedArticlesFragment : Fragment() {
 
@@ -22,9 +24,8 @@ class SavedArticlesFragment : Fragment() {
     private lateinit var toolbar : Toolbar
     private val binding get() = _binding!!
     private lateinit var newRecyclerView: RecyclerView
-    private lateinit var newArrayList: ArrayList<New>
-    lateinit var imageIds : Array<Int>
-    lateinit var headings : Array<String>
+    private lateinit var newArrayList: ArrayList<News>
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_appbar_home, menu)
@@ -39,36 +40,28 @@ class SavedArticlesFragment : Fragment() {
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
-        imageIds = arrayOf(
-            R.drawable.sport,
-            R.drawable.sport,
-            R.drawable.sport,
-            R.drawable.sport,
-            R.drawable.sport,
-            R.drawable.sport,
-        )
-        headings= arrayOf(
-            "Hasazd cazcazcaz",
-            "Hasazd cazcazcaz",
-            "Hasazd cazcazcaz",
-            "Hasazd cazcazcaz",
-            "Hasazd cazcazcaz",
-            "Hasazd cazcazcaz",
-        )
 
         newRecyclerView = binding.recyclerViewSavedNews
         newRecyclerView.layoutManager = LinearLayoutManager(context)
         newRecyclerView.setHasFixedSize(true)
-        newArrayList = arrayListOf<New>()
+        newArrayList = arrayListOf<News>()
         getAllSavedNews()
 
         return binding.root
     }
     private fun getAllSavedNews() {
-        for (i in imageIds.indices){
-            val news = New(imageIds[0],headings[0])
-            newArrayList.add(news)
+        for (
+        i in 1..10
+        ){
+            val newss = News(
+                Image("",""),
+                "",
+                "",
+                "",
+                "",
+            )
+            newArrayList.add(newss)
         }
-        newRecyclerView.adapter  = NewsAdapter(newArrayList)
+        newRecyclerView.adapter  = NewsAdapter(newArrayList,findNavController())
     }
 }
