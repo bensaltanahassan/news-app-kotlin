@@ -27,13 +27,16 @@ import com.example.newsapp.databinding.FragmentHomeBinding
 import com.example.newsapp.models.Category
 import com.example.newsapp.models.Favoris
 import com.example.newsapp.models.News
+import com.example.newsapp.models.User
 
 class HomeFragment : Fragment() {
     private lateinit var _binding : FragmentHomeBinding
     private val binding get() = _binding
     private lateinit var toolbar : Toolbar
-    private val homeData:HomeData  = HomeData()
-    private val newsData:NewsData  = NewsData()
+    private lateinit var homeData:HomeData
+    private lateinit var newsData:NewsData
+    private lateinit var favorisData:FavorisData
+    private lateinit var user:User
 
     private lateinit var sharedPref: SharedPreferencesManager
 
@@ -51,13 +54,26 @@ class HomeFragment : Fragment() {
     }
 
 
-
-
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+
+        sharedPref = SharedPreferencesManager.getInstance(requireContext())
+        if (!sharedPref.isLoggedIn()) {
+            findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+        }
+        user = sharedPref.getUser()!!
+        homeData = HomeData(user._id,user.token!!)
+        newsData = NewsData(user._id,user.token!!)
+        favorisData = FavorisData(user._id,user.token!!)
+
+
+
+
+
         newsArrayList = ArrayList<News>()
         listFavoris = ArrayList<Favoris>()
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -200,7 +216,7 @@ class HomeFragment : Fragment() {
 
 
     private fun onClickMarkButton(news: News) {
-        val favorisData:FavorisData  = FavorisData()
+
 
         if (news.isFavorite){
             val favoris = listFavoris.find { f -> f.article._id == news._id } ?: return
@@ -278,7 +294,7 @@ class HomeFragment : Fragment() {
 
 
     private fun addToFavoris(news: News){
-        val favorisData:FavorisData  = FavorisData()
+
         favorisData.addToFavoris(news,
             onSuccess = { responseAddFavoris ->
                 requireActivity().runOnUiThread {

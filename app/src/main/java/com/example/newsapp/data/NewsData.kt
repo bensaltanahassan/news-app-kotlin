@@ -15,9 +15,14 @@ import okio.IOException
 class NewsData {
     private val crud:Crud =  Crud();
     private val baseUrl : String = "https://news-api-8kaq.onrender.com/api"
-    private val userId:String = "657b33fadc7d9d7b39d28b56"
+    private lateinit var userId:String ;
+    private lateinit var token:String ;
 
-    private val token:String = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Nzc1OGJhZTZmMTU3OTI4NTE1ZmFkNCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE3MDI0MjE5NzV9.BhYCIUg0BZu5ftQ37jOBM2Br953aWexonukt6vmc4N0"
+    constructor(userId:String,token:String){
+        this.userId = userId
+        this.token = token
+    }
+
 
     fun getNewsByCategory(category: Category,
                           onSuccess : (ResponseNewsData) -> Unit,

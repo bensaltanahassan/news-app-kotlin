@@ -68,7 +68,7 @@ class LoginFragment : Fragment() {
                     }
                 }else{
                     requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), "Login Failed", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(), loginResponse.message, Toast.LENGTH_SHORT)
                             .show()
                     }
                 }

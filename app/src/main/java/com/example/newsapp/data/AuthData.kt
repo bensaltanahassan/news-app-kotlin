@@ -17,6 +17,11 @@ class AuthData {
     private val crud = Crud()
     private val gson = Gson()
     private val baseAuth = "https://news-api-8kaq.onrender.com/api/auth"
+
+
+
+
+
     fun login(
         email : String,
         password : String,
@@ -108,7 +113,7 @@ class AuthData {
         val json = """
             {
                 "email": "$email",
-                "code": $code
+                "verifyCode": $code
             }
         """.trimIndent()
         crud.post(verifyCodeUrl,json,null,object: Crud.ResponseCallback{

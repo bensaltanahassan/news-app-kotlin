@@ -64,7 +64,7 @@ class NewsAdapter (
 
         holder.title.text= currentItem.title
         val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
         val date:Date = inputFormat.parse(currentItem.createdAt)!!
         val formattedDate:String = outputFormat.format(date)
         holder.date.text = formattedDate

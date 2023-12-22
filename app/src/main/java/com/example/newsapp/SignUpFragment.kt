@@ -53,12 +53,18 @@ class SignUpFragment : Fragment() {
             email,
             password,
             onSuccess = { signUpResponse ->
-                if (signUpResponse.user != null) {
+                if (signUpResponse.status) {
                     requireActivity().runOnUiThread {
                         binding.progressBar.visibility = View.GONE
                         binding.signUpButton.visibility = View.VISIBLE
                         val action = SignUpFragmentDirections.actionSignUpFragmentToVerifyCodeFragment(email,"signUp")
                         findNavController().navigate(action)
+                    }
+                }else{
+                    requireActivity().runOnUiThread {
+                        binding.progressBar.visibility = View.GONE
+                        binding.signUpButton.visibility = View.VISIBLE
+                        Toast.makeText(requireContext(), signUpResponse.message, Toast.LENGTH_LONG).show()
                     }
                 }
             },
