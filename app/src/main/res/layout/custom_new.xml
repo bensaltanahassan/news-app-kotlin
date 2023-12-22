@@ -19,9 +19,9 @@
     <ImageView
         android:id="@+id/imageViewNew"
         android:layout_width="150dp"
-        android:layout_height="100dp"
+        android:layout_height="105dp"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         android:src="@drawable/sport"
         app:shapeAppearanceOverlay="@style/RoundCorner"
         />
@@ -50,7 +50,7 @@
             android:textColor="#777777" />
         <Space
             android:layout_width="wrap_content"
-            android:layout_height="40dp"/>
+            android:layout_height="30dp"/>
 
 
         <LinearLayout
