@@ -1,6 +1,5 @@
 package com.example.newsapp
 
-import Crud
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -19,24 +19,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.adapters.CategoriesAdapter
 import com.example.newsapp.adapters.NewsAdapter
+import com.example.newsapp.data.FavorisData
 import com.example.newsapp.data.HomeData
 import com.example.newsapp.data.NewsData
 import com.example.newsapp.databinding.FragmentHomeBinding
 import com.example.newsapp.models.Category
-import com.example.newsapp.models.Image
+import com.example.newsapp.models.Favoris
 import com.example.newsapp.models.News
-import com.example.newsapp.utlis.ResponseHomeData
-import com.google.gson.Gson
-import okhttp3.Call
-import okhttp3.Response
-import okio.IOException
 
 class HomeFragment : Fragment() {
     private lateinit var _binding : FragmentHomeBinding
-    private val binding get() = _binding!!
+    private val binding get() = _binding
     private lateinit var toolbar : Toolbar
     private val homeData:HomeData  = HomeData()
     private val newsData:NewsData  = NewsData()
+
 
     private lateinit var newRecyclerView: RecyclerView
     private lateinit var newsArrayList: ArrayList<News>
@@ -44,36 +41,50 @@ class HomeFragment : Fragment() {
     private lateinit var categoryRecyclerView: RecyclerView
     private lateinit var categoryArrayList: ArrayList<Category>
 
+    private lateinit var listFavoris : ArrayList<Favoris>
+
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_appbar_home, menu)
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         newsArrayList = ArrayList<News>()
+        listFavoris = ArrayList<Favoris>()
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         toolbar = binding.appBarHome.myToolBar
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
+        val boxSearch: View = binding.appBarHome.boxSearchHome
         val searchView:EditText = binding.appBarHome.searchNewsHome
+        val searchButton:View = binding.appBarHome.searchButtonHome
+        binding.noNewsLayout.visibility = View.GONE
+
         val backButton:View = binding.appBarHome.backButtonHome
 
         backButton.setOnClickListener {
-            searchView.visibility = View.GONE
+            boxSearch.visibility = View.GONE
             toolbar.title = "News App"
             toolbar.menu.findItem(R.id.action_search).isVisible = true
             backButton.visibility = View.GONE
+
+        }
+
+
+        searchButton.setOnClickListener{
+            searchNews(searchView.text.toString())
         }
 
         toolbar.setOnMenuItemClickListener {
             when(it.itemId){
                 R.id.action_search -> {
                     toolbar.title = ""
-                    searchView.visibility = View.VISIBLE
+                    boxSearch.visibility = View.VISIBLE
                     toolbar.menu.findItem(R.id.action_search).isVisible = false
                     backButton.visibility = View.VISIBLE
                     true
@@ -97,11 +108,11 @@ class HomeFragment : Fragment() {
 
 
 
+
     private fun getHomeData(){
         binding.progressBarHome.visibility = View.VISIBLE
         binding.recyclerViewNews.visibility = View.GONE
         binding.recyclerViewCategory.visibility = View.GONE
-
         homeData.getHomeData(
             onSuccess = { responseHomeData ->
                 requireActivity().runOnUiThread {
@@ -109,6 +120,7 @@ class HomeFragment : Fragment() {
                     binding.recyclerViewNews.visibility = View.VISIBLE
                     binding.recyclerViewCategory.visibility = View.VISIBLE
                     getAllCategories(responseHomeData.data.categories)
+                    getAllFavoris(responseHomeData.data.favoris)
                     getAllNews(responseHomeData.data.news)
                 }
             },
@@ -121,7 +133,6 @@ class HomeFragment : Fragment() {
                 }
             }
         )
-
     }
 
 
@@ -140,6 +151,7 @@ class HomeFragment : Fragment() {
 
     private fun getNewsByCategory(category: Category){
         binding.progressBarHome.visibility = View.VISIBLE
+        binding.noNewsLayout.visibility = View.GONE
         binding.recyclerViewNews.visibility = View.GONE
 
 
@@ -149,7 +161,27 @@ class HomeFragment : Fragment() {
                     binding.progressBarHome.visibility = View.GONE
                     binding.recyclerViewNews.visibility = View.VISIBLE
 
+                    getAllNews(responseNewsData.data)
+                }
+            },
+            onFailure = { error ->
+                requireActivity().runOnUiThread {
+                    Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+    }
 
+    private fun searchNews(key: String) {
+        binding.progressBarHome.visibility = View.VISIBLE
+        binding.recyclerViewNews.visibility = View.GONE
+
+
+        newsData.searchNews(key,
+            onSuccess = { responseNewsData ->
+                requireActivity().runOnUiThread {
+                    binding.progressBarHome.visibility = View.GONE
+                    binding.recyclerViewNews.visibility = View.VISIBLE
 
                     getAllNews(responseNewsData.data)
                 }
@@ -163,23 +195,101 @@ class HomeFragment : Fragment() {
     }
 
 
+    private fun onClickMarkButton(news: News) {
+        val favorisData:FavorisData  = FavorisData()
+
+        if (news.isFavorite){
+            val favoris = listFavoris.find { f -> f.article._id == news._id } ?: return
+            favorisData.deleteFromFavoris(
+                favoris,
+                onSuccess = { _ ->
+                    requireActivity().runOnUiThread {
+                        val favoris = listFavoris.find { f -> f.article._id == news._id }
+                        listFavoris.remove(favoris)
+                        Toast.makeText(context, "Supprimé avec succes from favoris", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                onFailure = { error ->
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
+
+        }
+        else{
+            favorisData.addToFavoris(
+                news,
+                onSuccess = { responseAddFavoris ->
+                    requireActivity().runOnUiThread {
+                        listFavoris.add(responseAddFavoris.data)
+                        Toast.makeText(context, "Ajouté avec succes to favoris", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                onFailure = { error ->
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
+        }
+
+    }
+
+
     private fun getAllNews(listNews:List<News>) {
         requireActivity().runOnUiThread {
             newsArrayList.clear()
-            listNews.forEach { newsArrayList.add(it) }
+            listNews.forEach {
+                it.isFavorite = listFavoris.any { f -> f.article._id == it._id }
+                newsArrayList.add(it)
+            }
             if (newRecyclerView.adapter == null) {
-                newRecyclerView.adapter = NewsAdapter(newsArrayList, findNavController())
+                newRecyclerView.adapter = NewsAdapter(
+                    newsArrayList,
+                    findNavController(),
+                    ::onClickMarkButton
+                    )
             } else {
                 newRecyclerView.adapter?.notifyDataSetChanged()
             }
             if (listNews.isNotEmpty()) {
                 binding.recyclerViewNews.visibility = View.VISIBLE
+                binding.noNewsLayout.visibility = View.GONE
             } else {
-                Toast.makeText(context, "No news available", Toast.LENGTH_SHORT).show()
+                binding.noNewsLayout.visibility = View.VISIBLE
                 binding.recyclerViewNews.visibility = View.GONE
             }
         }
 
     }
+
+
+    private fun getAllFavoris(favoris:List<Favoris>) {
+        requireActivity().runOnUiThread {
+            listFavoris.clear()
+            favoris.forEach { listFavoris.add(it) }
+        }
+    }
+
+
+    private fun addToFavoris(news: News){
+        val favorisData:FavorisData  = FavorisData()
+        favorisData.addToFavoris(news,
+            onSuccess = { responseAddFavoris ->
+                requireActivity().runOnUiThread {
+                    Toast.makeText(context, "Ajouté avec succes to favoris", Toast.LENGTH_SHORT).show()
+                }
+            },
+            onFailure = { error ->
+                requireActivity().runOnUiThread {
+                    Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
+    }
+
+
+
 
 }

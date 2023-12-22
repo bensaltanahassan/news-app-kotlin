@@ -12,10 +12,12 @@ class Crud {
     }
 
     fun get(url: String,jsonBody: String,authToken: String?, callback: ResponseCallback) {
+
         val getBody = jsonBody.toRequestBody("application/json".toMediaTypeOrNull())
         val requestBuilder  = Request.Builder()
             .url(url)
             .get()
+
 
         if(authToken != null){
             val headerValue = "Bearer $authToken"
@@ -84,10 +86,11 @@ class Crud {
         })
     }
 
-    fun delete(url: String,authToken: String?, callback: ResponseCallback) {
+    fun delete(url: String,jsonBody: String,authToken: String?, callback: ResponseCallback) {
+        val deleteBody = jsonBody.toRequestBody("application/json".toMediaTypeOrNull())
         val requestBuilder  = Request.Builder()
             .url(url)
-            .delete()
+            .delete(deleteBody)
 
         if(authToken != null){
             val headerValue = "Bearer $authToken"

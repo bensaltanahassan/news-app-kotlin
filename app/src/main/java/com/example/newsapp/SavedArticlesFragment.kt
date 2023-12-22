@@ -51,6 +51,8 @@ class SavedArticlesFragment : Fragment() {
     }
     private fun getAllSavedNews() {
         newArrayList = arrayListOf<News>()
-        newRecyclerView.adapter  = NewsAdapter(newArrayList,findNavController())
+        newRecyclerView.adapter  = NewsAdapter(newArrayList,findNavController(),::onClickMarkButton)
     }
+
+    private fun onClickMarkButton(news: News) {}
 }

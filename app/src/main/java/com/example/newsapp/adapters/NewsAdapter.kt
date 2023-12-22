@@ -14,14 +14,20 @@ import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.HomeFragmentDirections
 import com.example.newsapp.R
+import com.example.newsapp.data.FavorisData
 import com.example.newsapp.models.News
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class NewsAdapter (
     private val newsList: ArrayList<News>,
-    private val navController: NavController
+    private val navController: NavController,
+    private val onClickMarkButton: (news:News) -> Unit
 
     ): RecyclerView.Adapter<NewsAdapter.MyViewHolder>(){
+
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -57,7 +63,11 @@ class NewsAdapter (
 
 
         holder.title.text= currentItem.title
-        holder.date.text = currentItem.createdAt
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+        val date:Date = inputFormat.parse(currentItem.createdAt)!!
+        val formattedDate:String = outputFormat.format(date)
+        holder.date.text = formattedDate
         holder.author.text = currentItem.author
 
         val bookmarkButton = holder.bookmarkButtonNew
@@ -67,7 +77,7 @@ class NewsAdapter (
             navController.navigate(action)
         }
 
-        if(isFavorite(position)){
+        if(currentItem.isFavorite){
             bookmarkButton.setImageDrawable(ContextCompat.getDrawable(bookmarkButton.context,R.drawable.baseline_bookmark_24))
         }else{
             bookmarkButton.setImageDrawable(ContextCompat.getDrawable(bookmarkButton.context,R.drawable.baseline_bookmark_border_24))
@@ -79,7 +89,10 @@ class NewsAdapter (
 
 
     private fun onClickMarkButton(bookMarkButton: ImageButton, index:Int){
-        if(isFavorite(index)){
+
+        val currentItem = newsList[index]
+        onClickMarkButton(currentItem)
+        if(currentItem.isFavorite){
             bookMarkButton.setImageDrawable(ContextCompat.getDrawable(bookMarkButton.context,R.drawable.baseline_bookmark_border_24))
             newsList[index].isFavorite = false
         }else{
@@ -88,9 +101,7 @@ class NewsAdapter (
         }
     }
 
-    private fun isFavorite(index:Int):Boolean{
-        return newsList[index].isFavorite
-    }
+
 
     override fun getItemCount(): Int {
         return newsList.size;

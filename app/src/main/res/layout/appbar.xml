@@ -22,20 +22,40 @@
         android:visibility="gone"
         />
 
-    <EditText
-        android:id="@+id/searchNewsHome"
-        android:visibility="gone"
+    <LinearLayout
+        android:id="@+id/boxSearchHome"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:background="@drawable/custom_edittext"
-        android:drawableLeft="@drawable/baseline_search_24"
-        android:drawablePadding="10dp"
-        android:hint="Search"
-        android:padding="10dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        android:textSize="16sp" />
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:paddingVertical="10dp">
+
+        <EditText
+            android:id="@+id/searchNewsHome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Search"
+            android:textColor="@color/black"
+            android:textColorHint="@color/black"
+            android:textSize="16sp" />
+
+        <ImageButton
+            android:id="@+id/searchButtonHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_search_24"
+            android:background="?attr/selectableItemBackground"
+            android:padding="8dp"
+            android:contentDescription="Search"
+            android:onClick="onSearchClicked" />
+    </LinearLayout>
+
+
 
 
 
