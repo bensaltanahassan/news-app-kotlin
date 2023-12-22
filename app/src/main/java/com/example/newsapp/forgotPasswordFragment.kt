@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.newsapp.data.AuthData
 import com.example.newsapp.databinding.FragmentForgotPasswordBinding
 import okhttp3.Call
 import okhttp3.Response
@@ -20,7 +21,7 @@ import org.json.JSONObject
 class forgotPasswordFragment : Fragment() {
     private lateinit var _binding : FragmentForgotPasswordBinding
     private val binding get() = _binding!!
-    val crud = Crud()
+    private val authData:AuthData = AuthData()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,50 +30,46 @@ class forgotPasswordFragment : Fragment() {
         _binding = FragmentForgotPasswordBinding.inflate(inflater, container, false)
         binding.forgetPaswordButton.setOnClickListener {
             val email: String = binding.emailForgetPassword.text.toString();
+            binding.progressBar.visibility = View.VISIBLE
+            binding.forgetPaswordButton.visibility = View.GONE
+
             onClickForgetPasswordBtn(email)
         }
 
         return return binding.root
     }
 
-    private fun onClickForgetPasswordBtn(email:String){
-        val forgetPasswordUrl = "https://news-api-8kaq.onrender.com/api/auth/forgetpassword"
-        val json = """
-            {
-                "email": "$email"
-            }
-        """.trimIndent()
-        val token:String = ""
-        crud.post(forgetPasswordUrl,json,token,object: Crud.ResponseCallback{
-            override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body?.string()
-                val jsonResponse = JSONObject(responseData)
 
-                if (response.isSuccessful) {
-                    val message : String = "Un code de verification a été envoyé a $email"
+    fun onClickForgetPasswordBtn (email:String){
+        authData.forgetPassword(
+            email,
+            onSuccess = { forgetPasswordResponse ->
+                if (forgetPasswordResponse.status) {
                     requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-                        Handler(Looper.getMainLooper()).postDelayed({
-                            val action = forgotPasswordFragmentDirections.actionForgotPasswordFragmentToVerifyCodeFragment(email,"forgetPassword")
-                            findNavController().navigate(action);
-                        }, 2000)
+                        binding.progressBar.visibility = View.GONE
+                        binding.forgetPaswordButton.visibility = View.VISIBLE
+                        val action = forgotPasswordFragmentDirections.actionForgotPasswordFragmentToVerifyCodeFragment(email,"forgetPassword")
+                        findNavController().navigate(action);
                     }
-
                 }else{
-                    val message:String = jsonResponse.getString("message")
                     requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                        binding.progressBar.visibility = View.GONE
+                        binding.forgetPaswordButton.visibility = View.VISIBLE
+                        Toast.makeText(requireContext(),forgetPasswordResponse.message, Toast.LENGTH_LONG).show()
                     }
-
                 }
-
+            },
+            onFailure = { error ->
+                requireActivity().runOnUiThread {
+                    binding.progressBar.visibility = View.GONE
+                    binding.forgetPaswordButton.visibility = View.VISIBLE
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
+                }
             }
-            override fun onFailure(call: Call, e: IOException) {
-                Log.d("Request failed:", "${e.message}")
-            }
-        }
         )
     }
+
+
 
 
 }

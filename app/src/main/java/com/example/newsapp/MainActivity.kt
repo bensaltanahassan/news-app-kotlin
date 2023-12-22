@@ -12,16 +12,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val sharedPreferencesManager = SharedPreferencesManager.getInstance(this)
-        if (sharedPreferencesManager.isLoggedIn()) {
-            navigateToHomeFragment()
-        }
 
 
     }
 
 
-    private fun navigateToHomeFragment() {
 
-    }
 }

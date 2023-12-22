@@ -53,12 +53,10 @@ class SignUpFragment : Fragment() {
             email,
             password,
             onSuccess = { signUpResponse ->
-                val sharedPreferencesManager = SharedPreferencesManager.getInstance(requireContext())
                 if (signUpResponse.user != null) {
                     requireActivity().runOnUiThread {
                         binding.progressBar.visibility = View.GONE
                         binding.signUpButton.visibility = View.VISIBLE
-
                         val action = SignUpFragmentDirections.actionSignUpFragmentToVerifyCodeFragment(email,"signUp")
                         findNavController().navigate(action)
                     }

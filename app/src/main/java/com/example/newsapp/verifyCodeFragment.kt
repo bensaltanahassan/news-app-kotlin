@@ -2,7 +2,6 @@ package com.example.newsapp
 
 import Crud
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +9,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.newsapp.databinding.FragmentSignUpBinding
+import com.example.newsapp.data.AuthData
 import com.example.newsapp.databinding.FragmentVerifyCodeBinding
-import okhttp3.Call
-import okhttp3.Response
-import okio.IOException
-import org.json.JSONObject
 
 class verifyCodeFragment : Fragment() {
     val args: verifyCodeFragmentArgs by navArgs()
@@ -23,7 +18,7 @@ class verifyCodeFragment : Fragment() {
     private lateinit var _binding : FragmentVerifyCodeBinding
     private lateinit var type:String;
     private val binding get() = _binding!!
-    val crud = Crud()
+    private val authData:AuthData = AuthData()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,54 +34,49 @@ class verifyCodeFragment : Fragment() {
             val num5 = binding.otp5.text.toString()
             val concatenatedNumber = "$num1$num2$num3$num4$num5"
             val otpNumber = concatenatedNumber.toInt()
-            postVerifyCode(otpNumber,email!!)
+            binding.progressBar.visibility = View.VISIBLE
+            binding.verifyCodeButton.visibility = View.GONE
+            verifyCode(otpNumber,email!!)
         }
         return binding.root
     }
 
-    private fun postVerifyCode(otpNumber:Int,email:String){
-        val url : String = "https://news-api-8kaq.onrender.com/api/auth/verifycode"
-        val json = """
-            {
-                "email": "$email",
-                "verifyCode": $otpNumber
-            }
-        """.trimIndent()
-
-        val token:String = ""
-        crud.post(url,json,token,object: Crud.ResponseCallback{
-            override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body?.string()
-                val jsonresponse = JSONObject(responseData)
-                Log.d("POST Response:", "$responseData")
-                if(!response.isSuccessful){
-                    val message = jsonresponse.getString("message")
-                    requireActivity().runOnUiThread{
-
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-                    }
-
-                }else{
-                    requireActivity().runOnUiThread{
+    private fun verifyCode (otpNumber:Int,email:String){
+        authData.verifyCode(
+            email,
+            otpNumber,
+            onSuccess = { verifyCodeResponse ->
+                if (verifyCodeResponse.status) {
+                    requireActivity().runOnUiThread {
+                        binding.progressBar.visibility = View.GONE
+                        binding.verifyCodeButton.visibility = View.VISIBLE
                         if (type=="forgetPassword"){
                             val action = verifyCodeFragmentDirections.actionVerifyCodeFragmentToChangePasswordFragment(email)
                             findNavController().navigate(action)
                         }else{
                             findNavController().navigate(R.id.action_verifyCodeFragment_to_loginFragment)
                         }
-
-
                     }
-
+                }else{
+                    requireActivity().runOnUiThread {
+                        binding.progressBar.visibility = View.GONE
+                        binding.verifyCodeButton.visibility = View.VISIBLE
+                        Toast.makeText(requireContext(), verifyCodeResponse.message, Toast.LENGTH_LONG).show()
+                    }
+                }
+            },
+            onFailure = { error ->
+                requireActivity().runOnUiThread {
+                    binding.progressBar.visibility = View.GONE
+                    binding.verifyCodeButton.visibility = View.VISIBLE
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
                 }
             }
-            override fun onFailure(call: Call, e: IOException) {
-                Log.d("Request failed:", "${e.message}")
-
-            }
-        }
         )
+
     }
+
+
 
 
 }

@@ -21,6 +21,14 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
     val crud = Crud()
     private val authData:AuthData = AuthData()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val sharedPreferencesManager = SharedPreferencesManager.getInstance(requireContext())
+        if (sharedPreferencesManager.isLoggedIn()) {
+            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

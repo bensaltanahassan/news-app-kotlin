@@ -100,7 +100,7 @@ class AuthData {
 
     fun verifyCode(
         email : String,
-        code : String,
+        code : Int,
         onSuccess: (VerifyCodeResponse) -> Unit,
         onFailure: (String) -> Unit
     ){
@@ -108,7 +108,7 @@ class AuthData {
         val json = """
             {
                 "email": "$email",
-                "code": "$code"
+                "code": $code
             }
         """.trimIndent()
         crud.post(verifyCodeUrl,json,null,object: Crud.ResponseCallback{
