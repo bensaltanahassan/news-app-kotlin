@@ -82,6 +82,6 @@ class ArticleDetailsFragment : Fragment() {
         val formattedDate:String = outputFormat.format(date)
         return formattedDate
     }
-
+    
 
 }
