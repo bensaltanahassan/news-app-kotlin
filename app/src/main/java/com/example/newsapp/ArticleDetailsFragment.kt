@@ -52,7 +52,7 @@ class ArticleDetailsFragment : Fragment() {
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
         sharedPref = SharedPreferencesManager.getInstance(requireContext())
-        //TODO: add logged in logic
+
 
         //Shared preferences
         user = sharedPref.getUser()!!
