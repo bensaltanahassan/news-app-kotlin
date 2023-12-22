@@ -1,5 +1,6 @@
 package com.example.newsapp
 
+import SharedPreferencesManager
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -34,6 +35,8 @@ class HomeFragment : Fragment() {
     private val homeData:HomeData  = HomeData()
     private val newsData:NewsData  = NewsData()
 
+    private lateinit var sharedPref: SharedPreferencesManager
+
 
     private lateinit var newRecyclerView: RecyclerView
     private lateinit var newsArrayList: ArrayList<News>
@@ -43,11 +46,12 @@ class HomeFragment : Fragment() {
 
     private lateinit var listFavoris : ArrayList<Favoris>
 
-
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_appbar_home, menu)
     }
+
+
+
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreateView(

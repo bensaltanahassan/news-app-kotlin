@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.newsapp.data.AuthData
 import com.example.newsapp.databinding.FragmentSignUpBinding
 import okhttp3.Call
 import okhttp3.Response
@@ -19,7 +20,7 @@ import org.json.JSONObject
 class SignUpFragment : Fragment() {
     private lateinit var _binding : FragmentSignUpBinding
     private val binding get() = _binding!!
-    val crud = Crud()
+    private val  authData:AuthData = AuthData()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,9 +35,10 @@ class SignUpFragment : Fragment() {
             val password = binding.passwordSignUp.text.toString()
             val confirmPassword = binding.confirmPasswordSignUp.text.toString()
             if(password == confirmPassword){
-                postSignUp(firstName,lastName,email,password)
+                binding.progressBar.visibility = View.VISIBLE
+                binding.signUpButton.visibility = View.GONE
+                signUp(firstName,lastName,email,password)
             }else{
-
                 Toast.makeText(requireContext(), "Passwords doesnt match !", Toast.LENGTH_LONG).show()
             }
 
@@ -44,44 +46,34 @@ class SignUpFragment : Fragment() {
         return binding.root
     }
 
-    private fun postSignUp(firstName : String ,lastName : String,email : String, password : String){
-        val loginUrl : String = "https://news-api-8kaq.onrender.com/api/auth/signup"
-        val json = """
-            {
-                "firstName": "$firstName",
-                "lastName": "$lastName",
-                "email": "$email",
-                "password": "$password"
-            }
-        """.trimIndent()
+    private fun signUp(firstName : String ,lastName : String,email : String, password : String){
+        authData.signUp(
+            firstName,
+            lastName,
+            email,
+            password,
+            onSuccess = { signUpResponse ->
+                val sharedPreferencesManager = SharedPreferencesManager.getInstance(requireContext())
+                if (signUpResponse.user != null) {
+                    requireActivity().runOnUiThread {
+                        binding.progressBar.visibility = View.GONE
+                        binding.signUpButton.visibility = View.VISIBLE
 
-        val token:String = ""
-        crud.post(loginUrl,json,token,object: Crud.ResponseCallback{
-            override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body?.string()
-                val jsonresponse = JSONObject(responseData)
-                Log.d("POST Response:", "$responseData")
-                if(!response.isSuccessful){
-                    val message = jsonresponse.getString("message")
-                    requireActivity().runOnUiThread{
-
-                        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-                    }
-
-                }else{
-                    requireActivity().runOnUiThread{
                         val action = SignUpFragmentDirections.actionSignUpFragmentToVerifyCodeFragment(email,"signUp")
                         findNavController().navigate(action)
                     }
-
+                }
+            },
+            onFailure = { error ->
+                requireActivity().runOnUiThread {
+                    binding.progressBar.visibility = View.GONE
+                    binding.signUpButton.visibility = View.VISIBLE
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
                 }
             }
-            override fun onFailure(call: Call, e: IOException) {
-                Log.d("Request failed:", "${e.message}")
-
-            }
-        }
         )
+
     }
+
 
 }
