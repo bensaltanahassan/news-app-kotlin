@@ -1,5 +1,6 @@
 package com.example.newsapp
 
+import SharedPreferencesManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,12 +9,15 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.navArgs
+import com.example.newsapp.data.RatingData
 import com.example.newsapp.databinding.FragmentArticleDetailsBinding
 import com.example.newsapp.models.News
+import com.example.newsapp.models.User
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -26,6 +30,12 @@ class ArticleDetailsFragment : Fragment() {
     private lateinit var toolbar : Toolbar
     val args: ArticleDetailsFragmentArgs by navArgs()
     private lateinit var news:News
+    private final lateinit var rateData:RatingData
+    private lateinit var sharedPref: SharedPreferencesManager
+    private lateinit var user: User
+    private lateinit var userId:String
+    private  var token:String? = null
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_appbar_newsdetail, menu)
@@ -40,6 +50,16 @@ class ArticleDetailsFragment : Fragment() {
         toolbar.title = news.categoryId.name
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
+
+        sharedPref = SharedPreferencesManager.getInstance(requireContext())
+        //TODO: add logged in logic
+
+        //Shared preferences
+        user = sharedPref.getUser()!!
+        userId = user._id
+        token = user.token
+        rateData = RatingData(userId,token!!)
+
 
         binding.articleAuthor.text = news.author
         binding.articleName.text = news.title
@@ -69,7 +89,7 @@ class ArticleDetailsFragment : Fragment() {
 
         val ratingBar = binding.ratingBar
         ratingBar.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
-            ratingBar.rating.toInt()
+            handleRating(news._id,ratingBar.rating.toInt())
         }
 
 
@@ -82,6 +102,17 @@ class ArticleDetailsFragment : Fragment() {
         val formattedDate:String = outputFormat.format(date)
         return formattedDate
     }
-    
+    fun handleRating (articleId:String, rating:Int){
+        rateData.handleRating(articleId,rating, onSuccess = {responseRateData ->
+            Log.d("rating",responseRateData.toString())
+            requireActivity().runOnUiThread(){
+                binding.ratingId.visibility = View.VISIBLE
+                binding.ratingId.text = responseRateData.data.rating.toString()
+                Toast.makeText(requireContext(),"Avis ajouté avec succes",Toast.LENGTH_SHORT).show()
+            }
+        }, onFailure = {
+            Toast.makeText(requireContext(),"Erreur lors de l'ajout de l'avis",Toast.LENGTH_SHORT).show()
+        })
+    }
 
 }

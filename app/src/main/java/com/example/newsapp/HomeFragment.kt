@@ -149,9 +149,11 @@ class HomeFragment : Fragment() {
                     binding.progressBarHome.visibility = View.GONE
                     binding.recyclerViewNews.visibility = View.GONE
                     binding.recyclerViewCategory.visibility = View.GONE
+                    Log.d("error",error)
                     Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                 }
             }
+
         )
     }
 
