@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_weight="1"
         android:layout_margin="10dp"
         >
         <androidx.cardview.widget.CardView
@@ -159,6 +160,21 @@
 
 
     </LinearLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_nav"
+        android:background="@color/white"
+        app:itemTextColor="@color/purple"
+        app:itemIconSize="35dp"
+        app:itemIconTint="@color/purple"
+        android:layout_gravity="bottom"
+
+        >
+
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
+
 
 
 </LinearLayout>
