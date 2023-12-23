@@ -8,11 +8,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.findNavController
@@ -28,6 +30,7 @@ import com.example.newsapp.models.Category
 import com.example.newsapp.models.Favoris
 import com.example.newsapp.models.News
 import com.example.newsapp.models.User
+import com.google.android.material.divider.MaterialDividerItemDecoration
 
 class HomeFragment : Fragment() {
     private lateinit var _binding : FragmentHomeBinding
@@ -48,9 +51,17 @@ class HomeFragment : Fragment() {
     private lateinit var categoryArrayList: ArrayList<Category>
 
     private lateinit var listFavoris : ArrayList<Favoris>
+    private lateinit var toggle:ActionBarDrawerToggle
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_appbar_home, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (toggle.onOptionsItemSelected(item)){
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
@@ -65,6 +76,9 @@ class HomeFragment : Fragment() {
         if (!sharedPref.isLoggedIn()) {
             findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
         }
+
+
+
         user = sharedPref.getUser()!!
         homeData = HomeData(user._id,user.token!!)
         newsData = NewsData(user._id,user.token!!)
@@ -78,6 +92,36 @@ class HomeFragment : Fragment() {
         listFavoris = ArrayList<Favoris>()
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         toolbar = binding.appBarHome.myToolBar
+        //drawer menu
+        toggle = ActionBarDrawerToggle(requireActivity(),binding.drawerLayout,toolbar,R.string.open,R.string.close)
+        binding.drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        binding.navView.setCheckedItem(R.id.homePageDrawer)
+
+        binding.navView.setNavigationItemSelectedListener {
+            when(it.itemId){
+
+
+                R.id.savedNewsPageDrawer -> {
+                    findNavController().navigate(R.id.action_homeFragment_to_savedArticlesFragment2)
+                    true
+                }
+                R.id.profilePageDrawer -> {
+
+                    true
+                }
+                R.id.logOutDrawer -> {
+                    Toast.makeText(context, "Logout", Toast.LENGTH_SHORT).show()
+                    sharedPref.logout()
+                    findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+                    true
+                }
+                else -> false
+            }
+        }
+
+
+
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
         val boxSearch: View = binding.appBarHome.boxSearchHome
@@ -216,8 +260,6 @@ class HomeFragment : Fragment() {
 
 
     private fun onClickMarkButton(news: News) {
-
-
         if (news.isFavorite){
             val favoris = listFavoris.find { f -> f.article._id == news._id } ?: return
             favorisData.deleteFromFavoris(
@@ -258,6 +300,8 @@ class HomeFragment : Fragment() {
 
 
     private fun getAllNews(listNews:List<News>) {
+        val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
+
         requireActivity().runOnUiThread {
             newsArrayList.clear()
             listNews.forEach {
@@ -270,6 +314,8 @@ class HomeFragment : Fragment() {
                     findNavController(),
                     ::onClickMarkButton
                     )
+                newRecyclerView.addItemDecoration(divider)
+
             } else {
                 newRecyclerView.adapter?.notifyDataSetChanged()
             }
