@@ -1,6 +1,7 @@
 package com.example.newsapp.data
 
 import Crud
+import android.util.Log
 import com.example.newsapp.models.Favoris
 import com.example.newsapp.models.News
 import com.example.newsapp.utlis.ResponseAddFavoris
@@ -81,15 +82,15 @@ class FavorisData {
 
 
 
-    private fun getAllFavoris(userId: String,
+     fun getAllFavoris(
                              onSuccess : (ResponseGetFavoris) -> Unit,
                              onFailure : (String) -> Unit
     ){
-        val urlApi : String = "$baseUrl/favoris"
+        val urlApi : String = "$baseUrl/favoris/getfavoris"
         val userId:String = userId
         val json = """
             {
-                "userId": "$userId",
+                "userId": "$userId"
             }
         """.trimIndent()
         val token:String = token

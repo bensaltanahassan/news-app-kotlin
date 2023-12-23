@@ -124,6 +124,9 @@
         <action
             android:id="@+id/action_savedArticlesFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_savedArticlesFragment_to_articleDetailsFragment"
+            app:destination="@id/articleDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountFragment"
