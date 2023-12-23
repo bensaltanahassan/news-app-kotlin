@@ -74,6 +74,7 @@ class HomeFragment : Fragment() {
 
 
 
+
         newsArrayList = ArrayList<News>()
         listFavoris = ArrayList<Favoris>()
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -84,6 +85,38 @@ class HomeFragment : Fragment() {
         val searchView:EditText = binding.appBarHome.searchNewsHome
         val searchButton:View = binding.appBarHome.searchButtonHome
         binding.noNewsLayout.visibility = View.GONE
+
+        // Inside your fragment (e.g., HomeFragment or AccountFragment)
+        val bottomNavigationView = binding.bottomNavigationView
+
+        // Determine the current destination
+        val currentDestinationId = findNavController().currentDestination?.id
+
+        // Set the default item based on the current destination
+        bottomNavigationView.selectedItemId = when (currentDestinationId) {
+            R.id.homeFragment -> R.id.home
+            R.id.accountFragment -> R.id.settings
+            R.id.savedArticlesFragment -> R.id.saved
+            else -> R.id.home // Set a default value or handle other cases
+        }
+
+        //bottom nav-bar settings
+        binding.bottomNavigationView.setOnItemSelectedListener {
+            when(it.itemId){
+                R.id.home -> {
+                    true
+                }
+                R.id.saved -> {
+                    findNavController().navigate(R.id.action_homeFragment_to_savedArticlesFragment)
+                    true
+                }
+                R.id.settings -> {
+                    findNavController().navigate(R.id.action_homeFragment_to_accountFragment)
+                    true
+                }
+                else -> false
+            }
+        }
 
         val backButton:View = binding.appBarHome.backButtonHome
 

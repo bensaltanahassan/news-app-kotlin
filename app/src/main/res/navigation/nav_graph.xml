@@ -95,11 +95,14 @@
             android:id="@+id/action_homeFragment_to_articleDetailsFragment"
             app:destination="@id/articleDetailsFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_savedArticlesFragment2"
+            android:id="@+id/action_homeFragment_to_savedArticlesFragment"
             app:destination="@id/savedArticlesFragment" />
         <action
             android:id="@+id/action_homeFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
     </fragment>
     <fragment
         android:id="@+id/articleDetailsFragment"
@@ -114,10 +117,24 @@
         android:id="@+id/savedArticlesFragment"
         android:name="com.example.newsapp.SavedArticlesFragment"
         android:label="fragment_saved_articles"
-        tools:layout="@layout/fragment_saved_articles" />
+        tools:layout="@layout/fragment_saved_articles" >
+        <action
+            android:id="@+id/action_savedArticlesFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_savedArticlesFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+    </fragment>
     <fragment
         android:id="@+id/accountFragment"
         android:name="com.example.newsapp.AccountFragment"
         android:label="fragment_account"
-        tools:layout="@layout/fragment_account" />
+        tools:layout="@layout/fragment_account" >
+        <action
+            android:id="@+id/action_accountFragment_to_savedArticlesFragment"
+            app:destination="@id/savedArticlesFragment" />
+        <action
+            android:id="@+id/action_accountFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>

@@ -40,7 +40,37 @@ class SavedArticlesFragment : Fragment() {
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
+        // Inside your fragment (e.g., HomeFragment or AccountFragment)
+        val bottomNavigationView = binding.bottomNavigationView
 
+        // Determine the current destination
+        val currentDestinationId = findNavController().currentDestination?.id
+
+        // Set the default item based on the current destination
+        bottomNavigationView.selectedItemId = when (currentDestinationId) {
+            R.id.homeFragment -> R.id.home
+            R.id.accountFragment -> R.id.settings
+            R.id.savedArticlesFragment -> R.id.saved
+            else -> R.id.home // Set a default value or handle other cases
+        }
+
+        //bottom nav-bar settings
+        binding.bottomNavigationView.setOnItemSelectedListener {
+            when(it.itemId){
+                R.id.saved -> {
+                    true
+                }
+                R.id.home -> {
+                    findNavController().navigate(R.id.action_savedArticlesFragment_to_homeFragment)
+                    true
+                }
+                R.id.settings -> {
+                    findNavController().navigate(R.id.action_savedArticlesFragment_to_accountFragment)
+                    true
+                }
+                else -> false
+            }
+        }
         newRecyclerView = binding.recyclerViewSavedNews
         newRecyclerView.layoutManager = LinearLayoutManager(context)
         newRecyclerView.setHasFixedSize(true)
