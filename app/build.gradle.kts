@@ -70,12 +70,8 @@ dependencies {
 
     //Network Image
     implementation("io.coil-kt:coil:2.5.0")
-
-
     //Gson for JSON
     implementation("com.google.code.gson:gson:2.10")
-
-
     //avatar
     implementation ("io.getstream:avatarview-coil:1.0.7")
 

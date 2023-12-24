@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.fragments
 
 import SharedPreferencesManager
 import android.annotation.SuppressLint
@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -23,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.newsapp.R
 import com.example.newsapp.adapters.CategoriesAdapter
 import com.example.newsapp.adapters.NewsAdapter
 import com.example.newsapp.data.FavorisData
@@ -101,7 +101,10 @@ class HomeFragment : Fragment() {
 
 
         //drawer menu
-        toggle = ActionBarDrawerToggle(requireActivity(),binding.drawerLayout,toolbar,R.string.open,R.string.close)
+        toggle = ActionBarDrawerToggle(requireActivity(),binding.drawerLayout,toolbar,
+            R.string.open,
+            R.string.close
+        )
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         binding.navView.setCheckedItem(R.id.homePageDrawer)
@@ -143,7 +146,9 @@ class HomeFragment : Fragment() {
                 avatarHeaderDrawer.visibility = View.VISIBLE
             },
             onError = { _, _ ->
-                avatarHeaderDrawer.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.baseline_error_outline_24))
+                avatarHeaderDrawer.setImageDrawable(ContextCompat.getDrawable(requireContext(),
+                    R.drawable.baseline_error_outline_24
+                ))
                 progressBarImageHeader.visibility = View.GONE
                 avatarHeaderDrawer.visibility = View.VISIBLE
             },

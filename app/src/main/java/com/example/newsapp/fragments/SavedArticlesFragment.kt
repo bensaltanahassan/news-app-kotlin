@@ -1,12 +1,10 @@
-package com.example.newsapp
+package com.example.newsapp.fragments
 
 import SharedPreferencesManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -17,17 +15,14 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newsapp.adapters.CategoriesAdapter
+import com.example.newsapp.R
 import com.example.newsapp.adapters.FavorisAdapter
-import com.example.newsapp.adapters.NewsAdapter
 import com.example.newsapp.data.FavorisData
 import com.example.newsapp.databinding.FragmentSavedArticlesBinding
 import com.example.newsapp.models.Favoris
-import com.example.newsapp.models.Image
 import com.example.newsapp.models.News
 import com.example.newsapp.models.User
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -80,7 +75,10 @@ class SavedArticlesFragment : Fragment() {
 
 
         //drawer menu
-        toggle = ActionBarDrawerToggle(requireActivity(),binding.drawerLayout,toolbar,R.string.open,R.string.close)
+        toggle = ActionBarDrawerToggle(requireActivity(),binding.drawerLayout,toolbar,
+            R.string.open,
+            R.string.close
+        )
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         binding.navView.setCheckedItem(R.id.profilePageDrawer)
@@ -104,7 +102,9 @@ class SavedArticlesFragment : Fragment() {
                 avatarHeaderDrawer.visibility = View.VISIBLE
             },
             onError = { _, _ ->
-                avatarHeaderDrawer.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.baseline_error_outline_24))
+                avatarHeaderDrawer.setImageDrawable(ContextCompat.getDrawable(requireContext(),
+                    R.drawable.baseline_error_outline_24
+                ))
                 progressBarImageHeader.visibility = View.GONE
                 avatarHeaderDrawer.visibility = View.VISIBLE
             },

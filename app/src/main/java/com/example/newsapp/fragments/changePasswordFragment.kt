@@ -1,10 +1,6 @@
-package com.example.newsapp
+package com.example.newsapp.fragments
 
-import Crud
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,11 +10,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.newsapp.data.AuthData
 import com.example.newsapp.databinding.FragmentChangePasswordBinding
-import com.example.newsapp.databinding.FragmentForgotPasswordBinding
-import okhttp3.Call
-import okhttp3.Response
-import okio.IOException
-import org.json.JSONObject
 
 
 class changePasswordFragment : Fragment() {
@@ -63,7 +54,8 @@ class changePasswordFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         binding.progressBar.visibility = View.GONE
                         binding.changePasswordButton.visibility = View.VISIBLE
-                        val action = changePasswordFragmentDirections.actionChangePasswordFragmentToLoginFragment()
+                        val action =
+                           changePasswordFragmentDirections.actionChangePasswordFragmentToLoginFragment()
                         findNavController().navigate(action);
                     }
                 }else{

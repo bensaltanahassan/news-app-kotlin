@@ -1,4 +1,4 @@
-package com.example.newsapp
+package com.example.newsapp.fragments
 
 import SharedPreferencesManager
 import android.os.Bundle
@@ -12,8 +12,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.navArgs
+import com.example.newsapp.R
 import com.example.newsapp.data.RatingData
 import com.example.newsapp.databinding.FragmentArticleDetailsBinding
 import com.example.newsapp.models.News
@@ -21,14 +21,13 @@ import com.example.newsapp.models.User
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.math.log
 
 class ArticleDetailsFragment : Fragment() {
     private lateinit var _binding : FragmentArticleDetailsBinding
     private val binding get() = _binding!!
 
     private lateinit var toolbar : Toolbar
-    val args: ArticleDetailsFragmentArgs by navArgs()
+    val args: com.example.newsapp.fragments.ArticleDetailsFragmentArgs by navArgs()
     private lateinit var news:News
     private final lateinit var rateData:RatingData
     private lateinit var sharedPref: SharedPreferencesManager

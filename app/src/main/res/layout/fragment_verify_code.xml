@@ -8,7 +8,7 @@ android:orientation="vertical"
 android:gravity="center"
 android:background="@drawable/loginbkg"
 android:paddingTop="120dp"
-tools:context=".verifyCodeFragment">
+tools:context=".fragments.verifyCodeFragment">
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

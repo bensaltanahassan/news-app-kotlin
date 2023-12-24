@@ -1,6 +1,5 @@
-package com.example.newsapp
+package com.example.newsapp.fragments
 
-import Crud
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.newsapp.R
 import com.example.newsapp.data.AuthData
 import com.example.newsapp.databinding.FragmentVerifyCodeBinding
 
@@ -51,7 +51,10 @@ class verifyCodeFragment : Fragment() {
                         binding.progressBar.visibility = View.GONE
                         binding.verifyCodeButton.visibility = View.VISIBLE
                         if (type=="forgetPassword"){
-                            val action = verifyCodeFragmentDirections.actionVerifyCodeFragmentToChangePasswordFragment(email)
+                            val action =
+                                verifyCodeFragmentDirections.actionVerifyCodeFragmentToChangePasswordFragment(
+                                    email
+                                )
                             findNavController().navigate(action)
                         }else{
                             findNavController().navigate(R.id.action_verifyCodeFragment_to_loginFragment)

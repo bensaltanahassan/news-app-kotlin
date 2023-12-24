@@ -12,7 +12,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newsapp.HomeFragmentDirections
+import com.example.newsapp.fragments.HomeFragmentDirections
 import com.example.newsapp.R
 import com.example.newsapp.data.FavorisData
 import com.example.newsapp.models.News

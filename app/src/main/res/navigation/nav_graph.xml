@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.newsapp.LoginFragment"
+        android:name="com.example.newsapp.fragments.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
-        android:name="com.example.newsapp.SignUpFragment"
+        android:name="com.example.newsapp.fragments.SignUpFragment"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_sign_up" >
         <action
@@ -41,7 +41,7 @@
     </fragment>
     <fragment
         android:id="@+id/forgotPasswordFragment"
-        android:name="com.example.newsapp.forgotPasswordFragment"
+        android:name="com.example.newsapp.fragments.forgotPasswordFragment"
         android:label="fragment_forgot_password"
         tools:layout="@layout/fragment_forgot_password" >
         <action
@@ -58,7 +58,7 @@
     </fragment>
     <fragment
         android:id="@+id/verifyCodeFragment"
-        android:name="com.example.newsapp.verifyCodeFragment"
+        android:name="com.example.newsapp.fragments.verifyCodeFragment"
         android:label="fragment_verify_code"
         tools:layout="@layout/fragment_verify_code" >
         <action
@@ -75,7 +75,7 @@
     </fragment>
     <fragment
         android:id="@+id/changePasswordFragment"
-        android:name="com.example.newsapp.changePasswordFragment"
+        android:name="com.example.newsapp.fragments.changePasswordFragment"
         android:label="fragment_change_password"
         tools:layout="@layout/fragment_change_password" >
         <action
@@ -88,7 +88,7 @@
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.newsapp.HomeFragment"
+        android:name="com.example.newsapp.fragments.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -106,7 +106,7 @@
     </fragment>
     <fragment
         android:id="@+id/articleDetailsFragment"
-        android:name="com.example.newsapp.ArticleDetailsFragment"
+        android:name="com.example.newsapp.fragments.ArticleDetailsFragment"
         android:label="fragment_article_details"
         tools:layout="@layout/fragment_article_details" >
         <argument
@@ -115,7 +115,7 @@
     </fragment>
     <fragment
         android:id="@+id/savedArticlesFragment"
-        android:name="com.example.newsapp.SavedArticlesFragment"
+        android:name="com.example.newsapp.fragments.SavedArticlesFragment"
         android:label="fragment_saved_articles"
         tools:layout="@layout/fragment_saved_articles" >
         <action
@@ -133,7 +133,7 @@
     </fragment>
     <fragment
         android:id="@+id/accountFragment"
-        android:name="com.example.newsapp.AccountFragment"
+        android:name="com.example.newsapp.fragments.AccountFragment"
         android:label="fragment_account"
         tools:layout="@layout/fragment_account" >
         <action

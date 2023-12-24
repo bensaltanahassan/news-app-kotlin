@@ -1,40 +1,30 @@
-package com.example.newsapp
+package com.example.newsapp.fragments
 
 import SharedPreferencesManager
 import android.app.Activity
 import android.content.ContentResolver
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.provider.OpenableColumns
-import android.util.Base64
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
-import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import com.example.newsapp.R
 import com.example.newsapp.data.UsersData
 import com.example.newsapp.databinding.FragmentAccountBinding
-import com.example.newsapp.databinding.FragmentSavedArticlesBinding
 import com.example.newsapp.models.User
-import com.example.newsapp.utlis.RealPathUtil
 import io.getstream.avatarview.coil.loadImage
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -98,7 +88,9 @@ class AccountFragment : Fragment() {
                 binding.avatarView.visibility = View.VISIBLE
             },
             onError = { _, _ ->
-                avatarView.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.baseline_error_outline_24))
+                avatarView.setImageDrawable(ContextCompat.getDrawable(requireContext(),
+                    R.drawable.baseline_error_outline_24
+                ))
                 binding.progressBarImage.visibility = View.GONE
                 binding.avatarView.visibility = View.VISIBLE
             },
@@ -108,7 +100,10 @@ class AccountFragment : Fragment() {
 
 
         //drawer menu
-        toggle = ActionBarDrawerToggle(requireActivity(),binding.drawerLayout,toolbar,R.string.open,R.string.close)
+        toggle = ActionBarDrawerToggle(requireActivity(),binding.drawerLayout,toolbar,
+            R.string.open,
+            R.string.close
+        )
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         binding.navView.setCheckedItem(R.id.profilePageDrawer)
@@ -131,7 +126,9 @@ class AccountFragment : Fragment() {
                 avatarHeaderDrawer.visibility = View.VISIBLE
             },
             onError = { _, _ ->
-                avatarHeaderDrawer.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.baseline_error_outline_24))
+                avatarHeaderDrawer.setImageDrawable(ContextCompat.getDrawable(requireContext(),
+                    R.drawable.baseline_error_outline_24
+                ))
                 progressBarImageHeader.visibility = View.GONE
                 avatarHeaderDrawer.visibility = View.VISIBLE
             },

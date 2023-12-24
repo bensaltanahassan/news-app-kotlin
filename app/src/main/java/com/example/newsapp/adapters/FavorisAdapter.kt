@@ -11,12 +11,12 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.newsapp.HomeFragmentDirections
+import com.example.newsapp.fragments.HomeFragmentDirections
 import com.example.newsapp.R
 import com.example.newsapp.models.News
 import coil.ImageLoader
 import coil.request.ImageRequest
-import com.example.newsapp.SavedArticlesFragmentDirections
+import com.example.newsapp.fragments.SavedArticlesFragmentDirections
 import java.text.SimpleDateFormat
 import java.util.*
 

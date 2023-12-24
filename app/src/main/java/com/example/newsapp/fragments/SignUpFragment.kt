@@ -1,8 +1,6 @@
-package com.example.newsapp
+package com.example.newsapp.fragments
 
-import Crud
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +9,6 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.newsapp.data.AuthData
 import com.example.newsapp.databinding.FragmentSignUpBinding
-import okhttp3.Call
-import okhttp3.Response
-import okio.IOException
-import org.json.JSONObject
 
 
 class SignUpFragment : Fragment() {
@@ -57,7 +51,11 @@ class SignUpFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         binding.progressBar.visibility = View.GONE
                         binding.signUpButton.visibility = View.VISIBLE
-                        val action = SignUpFragmentDirections.actionSignUpFragmentToVerifyCodeFragment(email,"signUp")
+                        val action =
+                            com.example.newsapp.fragments.SignUpFragmentDirections.actionSignUpFragmentToVerifyCodeFragment(
+                                email,
+                                "signUp"
+                            )
                         findNavController().navigate(action)
                     }
                 }else{
