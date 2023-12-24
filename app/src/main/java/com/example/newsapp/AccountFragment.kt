@@ -13,13 +13,17 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import android.util.Base64
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
@@ -31,6 +35,8 @@ import com.example.newsapp.databinding.FragmentAccountBinding
 import com.example.newsapp.databinding.FragmentSavedArticlesBinding
 import com.example.newsapp.models.User
 import com.example.newsapp.utlis.RealPathUtil
+import io.getstream.avatarview.coil.loadImage
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileInputStream
 
@@ -43,11 +49,15 @@ class AccountFragment : Fragment() {
     private lateinit var toggle:ActionBarDrawerToggle
     private lateinit var sharedPref: SharedPreferencesManager
     private lateinit var user: User
+
+    private lateinit var avatarView:io.getstream.avatarview.AvatarView
     private val binding get() = _binding!!
 
     private lateinit var usersData: UsersData
     private var file:File? = null
     private var fileUri:Uri? = null
+    private var bitmap:Bitmap? = null
+    private var ext:String? = null
 
 
 
@@ -67,11 +77,32 @@ class AccountFragment : Fragment() {
         sharedPref = SharedPreferencesManager.getInstance(requireContext())
         user = sharedPref.getUser()!!
 
+
+
         usersData = UsersData(user._id,user.token!!)
 
         _binding = FragmentAccountBinding.inflate(inflater, container, false)
         toolbar = binding.appBarProfile.myToolBar
         toolbar.title="Profile"
+
+        avatarView = binding.avatarView
+
+        avatarView.loadImage(
+            user.profilePhoto.url,
+            onStart = {
+                binding.progressBarImage.visibility = View.VISIBLE
+                binding.avatarView.visibility = View.GONE
+            },
+            onComplete = {
+                binding.progressBarImage.visibility = View.GONE
+                binding.avatarView.visibility = View.VISIBLE
+            },
+            onError = { _, _ ->
+                avatarView.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.baseline_error_outline_24))
+                binding.progressBarImage.visibility = View.GONE
+                binding.avatarView.visibility = View.VISIBLE
+            },
+        )
 
 
 
@@ -81,6 +112,32 @@ class AccountFragment : Fragment() {
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         binding.navView.setCheckedItem(R.id.profilePageDrawer)
+        binding.navView.getHeaderView(0).findViewById<TextView>(R.id.nameHeaderMenu).text = user.firstName + " " + user.lastName
+
+
+
+        //access to the image in the header in the drawer
+        val headerView: View = binding.navView.getHeaderView(0)
+        val avatarHeaderDrawer = headerView.findViewById<io.getstream.avatarview.AvatarView>(R.id.avatarViewHeader)
+        val progressBarImageHeader = headerView.findViewById<ProgressBar>(R.id.progressBarImageHeader)
+        avatarHeaderDrawer.loadImage(
+            user.profilePhoto.url,
+            onStart = {
+                progressBarImageHeader.visibility = View.VISIBLE
+                avatarHeaderDrawer.visibility = View.GONE
+            },
+            onComplete = {
+                progressBarImageHeader.visibility = View.GONE
+                avatarHeaderDrawer.visibility = View.VISIBLE
+            },
+            onError = { _, _ ->
+                avatarHeaderDrawer.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.baseline_error_outline_24))
+                progressBarImageHeader.visibility = View.GONE
+                avatarHeaderDrawer.visibility = View.VISIBLE
+            },
+        )
+
+
 
         binding.navView.setNavigationItemSelectedListener {
             when(it.itemId){
@@ -154,86 +211,133 @@ class AccountFragment : Fragment() {
                 binding.progressBar.visibility = View.VISIBLE
                 binding.updateProfileBtn.visibility = View.GONE
 
-                usersData.updateUser(
-                    firstName,
-                    lastName,
-                    email,
-                    binding.password.text.toString(),
-                    file,
-                    onSuccess = {
-                        if (it.status){
-                            requireActivity().runOnUiThread {
-                                var updatedUser = it.user!!
-                                updatedUser.token = user.token
-                                sharedPref.saveUser(updatedUser)
-                                user = updatedUser
-                                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                            }
-                        }else{
-                            requireActivity().runOnUiThread {
-                                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        requireActivity().runOnUiThread {
-                            binding.progressBar.visibility = View.GONE
-                            binding.updateProfileBtn.visibility = View.VISIBLE
-                        }
-                    },
-                    onFailure = {
-                        requireActivity().runOnUiThread {
-                            Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                            binding.progressBar.visibility = View.GONE
-                            binding.updateProfileBtn.visibility = View.VISIBLE
-                        }
-                    }
 
-                )
+                if (file==null){
+                    usersData.updateUser(
+                        firstName,
+                        lastName,
+                        email,
+                        binding.password.text.toString(),
+                        onSuccess = {
+                            if (it.status){
+                                requireActivity().runOnUiThread {
+                                    var updatedUser = it.user!!
+                                    updatedUser.token = user.token
+                                    sharedPref.saveUser(updatedUser)
+                                    user = updatedUser
+                                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                                }
+                            }else{
+                                requireActivity().runOnUiThread {
+                                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            requireActivity().runOnUiThread {
+                                binding.progressBar.visibility = View.GONE
+                                binding.updateProfileBtn.visibility = View.VISIBLE
+                            }
+                        },
+                        onFailure = {
+                            requireActivity().runOnUiThread {
+                                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                                binding.progressBar.visibility = View.GONE
+                                binding.updateProfileBtn.visibility = View.VISIBLE
+                            }
+                        }
+                    )
+                }else{
+                    usersData.updateUserWithImage(
+                        firstName,
+                        lastName,
+                        email,
+                        binding.password.text.toString(),
+                        file!!,
+                        onSuccess = {
+                            if (it.status){
+                                requireActivity().runOnUiThread {
+                                    var updatedUser = it.user!!
+                                    updatedUser.token = user.token
+                                    sharedPref.saveUser(updatedUser)
+                                    user = updatedUser
+                                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                                }
+                            }else{
+                                requireActivity().runOnUiThread {
+                                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            requireActivity().runOnUiThread {
+                                binding.progressBar.visibility = View.GONE
+                                binding.updateProfileBtn.visibility = View.VISIBLE
+                            }
+                        },
+                        onFailure = {
+                            requireActivity().runOnUiThread {
+                                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                                binding.progressBar.visibility = View.GONE
+                                binding.updateProfileBtn.visibility = View.VISIBLE
+                            }
+                        }
+                    )
+                }
+
             }
         }
         return binding.root
     }
 
     private fun pickImage() {
-        if (1==1
-        ) {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, 10)
-        }else{
-            Log.d("permission","not granted")
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                1
-            )
-        }
+        val intent:Intent =Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, 1000)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                pickImage()
-            } else {
-                Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
-            }
+
+    private fun prepareToUploadImage(){
+        val byteArrayOutputStream:ByteArrayOutputStream = ByteArrayOutputStream()
+        if (bitmap!=null){
+            bitmap!!.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream)
+            val bytes= byteArrayOutputStream.toByteArray()
+            val imageFile = File(requireContext().cacheDir,"image.$ext")
+            imageFile.writeBytes(bytes)
+            file = imageFile
+
         }
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode==10 && resultCode== Activity.RESULT_OK && data!=null){
-            fileUri = data.data
-            val path = RealPathUtil.getRealPath(requireContext(),fileUri!!)
-            file = File(path)
-            val bitmap =BitmapFactory.decodeFile(path)
-            binding.avatarView.setImageBitmap(bitmap)
+        if (resultCode == Activity.RESULT_OK && requestCode == 1000){
+            fileUri = data?.data
+            try {
+                fileUri?.let { uri ->
+                    val contentResolver: ContentResolver = requireActivity().contentResolver
+                    val inputStream = contentResolver.openInputStream(uri)
+                    val type = contentResolver.getType(uri)
+                    val extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(type)
+
+
+                    if (inputStream != null && extension != null) {
+                        file = File(requireContext().cacheDir, "image.$extension")
+                        inputStream.use { input ->
+                            file!!.outputStream().use { output ->
+                                input.copyTo(output)
+                            }
+                        }
+                        ext = extension
+                        bitmap = BitmapFactory.decodeStream(FileInputStream(file))
+                        avatarView.loadImage(uri.toString())
+
+                        prepareToUploadImage()
+
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
 

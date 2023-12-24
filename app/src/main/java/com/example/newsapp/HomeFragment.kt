@@ -13,10 +13,13 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +34,7 @@ import com.example.newsapp.models.Favoris
 import com.example.newsapp.models.News
 import com.example.newsapp.models.User
 import com.google.android.material.divider.MaterialDividerItemDecoration
+import io.getstream.avatarview.coil.loadImage
 
 class HomeFragment : Fragment() {
     private lateinit var _binding : FragmentHomeBinding
@@ -101,6 +105,7 @@ class HomeFragment : Fragment() {
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         binding.navView.setCheckedItem(R.id.homePageDrawer)
+        binding.navView.getHeaderView(0).findViewById<TextView>(R.id.nameHeaderMenu).text = user.firstName + " " + user.lastName
 
         binding.navView.setNavigationItemSelectedListener {
             when(it.itemId){
@@ -121,6 +126,28 @@ class HomeFragment : Fragment() {
             }
         }
         //end drawer menu
+
+
+        //access to the image in the header in the drawer
+        val headerView: View = binding.navView.getHeaderView(0)
+        val avatarHeaderDrawer = headerView.findViewById<io.getstream.avatarview.AvatarView>(R.id.avatarViewHeader)
+        val progressBarImageHeader = headerView.findViewById<ProgressBar>(R.id.progressBarImageHeader)
+        avatarHeaderDrawer.loadImage(
+            user.profilePhoto.url,
+            onStart = {
+                progressBarImageHeader.visibility = View.VISIBLE
+                avatarHeaderDrawer.visibility = View.GONE
+            },
+            onComplete = {
+                progressBarImageHeader.visibility = View.GONE
+                avatarHeaderDrawer.visibility = View.VISIBLE
+            },
+            onError = { _, _ ->
+                avatarHeaderDrawer.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.baseline_error_outline_24))
+                progressBarImageHeader.visibility = View.GONE
+                avatarHeaderDrawer.visibility = View.VISIBLE
+            },
+        )
 
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
@@ -313,8 +340,14 @@ class HomeFragment : Fragment() {
                 news,
                 onSuccess = { responseAddFavoris ->
                     requireActivity().runOnUiThread {
-                        listFavoris.add(responseAddFavoris.data)
-                        Toast.makeText(context, "Ajouté avec succes to favoris", Toast.LENGTH_SHORT).show()
+                        if (responseAddFavoris.data!=null){
+                            listFavoris.add(responseAddFavoris.data)
+                            Toast.makeText(context, "Ajouté avec succes to favoris", Toast.LENGTH_SHORT).show()
+
+                        } else{
+                            Toast.makeText(context, responseAddFavoris.message, Toast.LENGTH_SHORT).show()
+                        }
+
                     }
                 },
                 onFailure = { error ->
@@ -368,21 +401,7 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun addToFavoris(news: News){
 
-        favorisData.addToFavoris(news,
-            onSuccess = { responseAddFavoris ->
-                requireActivity().runOnUiThread {
-                    Toast.makeText(context, "Ajouté avec succes to favoris", Toast.LENGTH_SHORT).show()
-                }
-            },
-            onFailure = { error ->
-                requireActivity().runOnUiThread {
-                    Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-                }
-            }
-        )
-    }
 
 
 

@@ -30,14 +30,12 @@ class FavorisData {
                              onFailure : (String) -> Unit
     ){
         val urlApi : String = "$baseUrl/favoris"
-        val userId:String = userId
         val json = """
             {
                 "userId": "$userId",
                 "articleId": "${news._id}"
             }
         """.trimIndent()
-        val token:String = token
         crud.post(urlApi,json,token,
             object: Crud.ResponseCallback{
                 override fun onResponse(call: Call, response: Response) {

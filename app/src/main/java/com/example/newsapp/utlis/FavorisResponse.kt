@@ -12,7 +12,8 @@ data class ResponseDeleteFavoris(
 
 data class ResponseAddFavoris(
     val status: String,
-    val data: Favoris
+    val message:String ="",
+    val data: Favoris? = null
 )
 
 

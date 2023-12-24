@@ -7,11 +7,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +30,8 @@ import com.example.newsapp.models.Favoris
 import com.example.newsapp.models.Image
 import com.example.newsapp.models.News
 import com.example.newsapp.models.User
+import com.google.android.material.divider.MaterialDividerItemDecoration
+import io.getstream.avatarview.coil.loadImage
 
 class SavedArticlesFragment : Fragment() {
 
@@ -39,34 +46,86 @@ class SavedArticlesFragment : Fragment() {
     private lateinit var sharedPref: SharedPreferencesManager
 
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_appbar_home, menu)
+    //drawer
+    private lateinit var toggle:ActionBarDrawerToggle
+
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (toggle.onOptionsItemSelected(item)){
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        //get the user from sharedPrefs
+        sharedPref = SharedPreferencesManager.getInstance(requireContext())
+        user = sharedPref.getUser()!!
+
+
        _binding = FragmentSavedArticlesBinding.inflate(inflater, container, false)
         toolbar = binding.appBarHome.myToolBar
         toolbar.title = "Saved Articles"
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
-        // Inside your fragment (e.g., HomeFragment or AccountFragment)
+
+
+
+        //drawer menu
+        toggle = ActionBarDrawerToggle(requireActivity(),binding.drawerLayout,toolbar,R.string.open,R.string.close)
+        binding.drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+        binding.navView.setCheckedItem(R.id.profilePageDrawer)
+        binding.navView.getHeaderView(0).findViewById<TextView>(R.id.nameHeaderMenu).text = user.firstName + " " + user.lastName
+
+
+
+
+        //access to the image in the header in the drawer
+        val headerView: View = binding.navView.getHeaderView(0)
+        val avatarHeaderDrawer = headerView.findViewById<io.getstream.avatarview.AvatarView>(R.id.avatarViewHeader)
+        val progressBarImageHeader = headerView.findViewById<ProgressBar>(R.id.progressBarImageHeader)
+        avatarHeaderDrawer.loadImage(
+            user.profilePhoto.url,
+            onStart = {
+                progressBarImageHeader.visibility = View.VISIBLE
+                avatarHeaderDrawer.visibility = View.GONE
+            },
+            onComplete = {
+                progressBarImageHeader.visibility = View.GONE
+                avatarHeaderDrawer.visibility = View.VISIBLE
+            },
+            onError = { _, _ ->
+                avatarHeaderDrawer.setImageDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.baseline_error_outline_24))
+                progressBarImageHeader.visibility = View.GONE
+                avatarHeaderDrawer.visibility = View.VISIBLE
+            },
+        )
+
+
+
+
+
+        // bottom nav bar
         val bottomNavigationView = binding.bottomNavigationView
 
-        // Determine the current destination
         val currentDestinationId = findNavController().currentDestination?.id
 
-        // Set the default item based on the current destination
         bottomNavigationView.selectedItemId = when (currentDestinationId) {
             R.id.homeFragment -> R.id.home
             R.id.accountFragment -> R.id.settings
             R.id.savedArticlesFragment -> R.id.saved
-            else -> R.id.home // Set a default value or handle other cases
+            else -> R.id.home
         }
 
-        //bottom nav-bar settings
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId){
                 R.id.saved -> {
@@ -83,10 +142,9 @@ class SavedArticlesFragment : Fragment() {
                 else -> false
             }
         }
+        // end bottom nav bar
 
-        //get the user from sharedPrefs
-        sharedPref = SharedPreferencesManager.getInstance(requireContext())
-        user = sharedPref.getUser()!!
+
         //construct favorisData
         favorisData = FavorisData(user._id,user.token!!)
         //get all saved news
@@ -101,6 +159,8 @@ class SavedArticlesFragment : Fragment() {
         return binding.root
     }
     private fun getAllSavedNews() {
+        val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
+
         newArrayList = arrayListOf<News>()
         favorisArrayList = arrayListOf<Favoris>()
         favorisData.getAllFavoris( onSuccess = { response ->
@@ -120,6 +180,8 @@ class SavedArticlesFragment : Fragment() {
                         findNavController(),
                         ::onClickMarkButton
                     )
+                    binding.recyclerViewSavedNews.addItemDecoration(divider)
+
                 } else {
                     binding.recyclerViewSavedNews.adapter?.notifyDataSetChanged()
                 }

@@ -10,7 +10,18 @@
     >
 
 
+    <ProgressBar
+        android:id="@+id/progressBarImageHeader"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+
+        />
+
+
     <io.getstream.avatarview.AvatarView
+        android:id="@+id/avatarViewHeader"
         android:layout_width="110dp"
         android:layout_height="110dp"
         app:avatarViewBorderColor="@color/yellow"

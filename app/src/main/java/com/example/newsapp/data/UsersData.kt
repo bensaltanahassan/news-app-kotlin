@@ -18,7 +18,6 @@ class UsersData(private var userId: String, private var token: String) {
         lastName:String?,
         email:String?,
         password:String?,
-        image:File?,
         onSuccess : (UpdateUserResponse) -> Unit,
         onFailure : (String) -> Unit
     ){
@@ -43,56 +42,61 @@ class UsersData(private var userId: String, private var token: String) {
             }
         """.trimIndent()
         }
-        if (image!=null){
-            Log.d("withImage","withImage")
-            Log.d("image","${image.path}")
-            crud.putWithImage(
-                urlApi,
-                json,
-                token,
-                image,
-                object: Crud.ResponseCallback{
-                    override fun onResponse(call: Call, response: Response) {
-                        val response = response.body?.string()
-                        val gson = Gson()
-                        val updateUserResponse = gson.fromJson(response, UpdateUserResponse::class.java)
-                        Log.d("updateUserResponse",updateUserResponse.toString())
-                        onSuccess(updateUserResponse)
-                    }
-                    override fun onFailure(call: Call, e: IOException) {
-                        Log.d("updateUserFailure",e.message!!)
-                        onFailure(e.message!!)
-                    }
+
+
+        crud.update(
+            urlApi,
+            json,
+            token,
+            object: Crud.ResponseCallback{
+                override fun onResponse(call: Call, response: Response) {
+                    val response = response.body?.string()
+                    val gson = Gson()
+                    val updateUserResponse = gson.fromJson(response, UpdateUserResponse::class.java)
+                    onSuccess(updateUserResponse)
                 }
-            )
-        }else{
-            Log.d("withoutImage","withoutImage")
-
-            crud.update(
-                urlApi,
-                json,
-                token,
-                object: Crud.ResponseCallback{
-                    override fun onResponse(call: Call, response: Response) {
-                        val response = response.body?.string()
-                        val gson = Gson()
-                        val updateUserResponse = gson.fromJson(response, UpdateUserResponse::class.java)
-                        onSuccess(updateUserResponse)
-                    }
-                    override fun onFailure(call: Call, e: IOException) {
-                        onFailure(e.message!!)
-                    }
+                override fun onFailure(call: Call, e: IOException) {
+                    onFailure(e.message!!)
                 }
-            )
-
-        }
-
-
+            }
+        )
+    }
 
 
+    fun updateUserWithImage(
+        firstName:String?,
+        lastName:String?,
+        email:String?,
+        password:String?,
+        file:File,
+        onSuccess : (UpdateUserResponse) -> Unit,
+        onFailure : (String) -> Unit
+    ){
+        val urlApi  = "$baseUrl/users/$userId"
 
 
+        crud.putWithImage(
+            urlApi,
+            firstName!!,
+            lastName!!,
+            email!!,
+            password!!,
+            token,
+            file,
 
+            object: Crud.ResponseCallback{
+                override fun onResponse(call: Call, response: Response) {
+                    val response = response.body?.string()
+                    val gson = Gson()
+                    val updateUserResponse = gson.fromJson(response, UpdateUserResponse::class.java)
+                    Log.d("updateUserWithImage",updateUserResponse.toString())
+                    onSuccess(updateUserResponse)
+                }
+                override fun onFailure(call: Call, e: IOException) {
+                    onFailure(e.message!!)
+                }
+            }
+        )
     }
 
 

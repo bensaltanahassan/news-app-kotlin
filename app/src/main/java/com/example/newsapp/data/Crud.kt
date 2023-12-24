@@ -113,19 +113,34 @@ class Crud {
         })
     }
 
-    fun putWithImage(url: String, jsonBody: String,authToken: String?,file:File, callback: ResponseCallback) {
-        val jsonMediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
-        val jsonRequestBody = RequestBody.create(jsonMediaType, jsonBody)
-
-        val imageMediaType = "image/*".toMediaTypeOrNull()
-        val imageRequestBody = file.asRequestBody(imageMediaType)
-
-        val multipartBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("data", null, jsonRequestBody)
-            .addFormDataPart("file", file.name, imageRequestBody)
-            .build()
-
+    fun putWithImage(
+        url: String,
+        firstName:String,
+        lastName:String,
+        email:String,
+        password:String?,
+        authToken: String?,
+        file:File,
+        callback: ResponseCallback) {
+        val requestBody: RequestBody
+        if (password != null) {
+            requestBody= MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("image", file.name, file.asRequestBody("image/*".toMediaTypeOrNull()))
+                .addFormDataPart("firstName", firstName)
+                .addFormDataPart("lastName", lastName)
+                .addFormDataPart("email", email)
+                .addFormDataPart("password", password)
+                .build()
+        } else {
+            requestBody= MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("image", file.name, file.asRequestBody("image/*".toMediaTypeOrNull()))
+                .addFormDataPart("firstName", firstName)
+                .addFormDataPart("lastName", lastName)
+                .addFormDataPart("email", email)
+                .build()
+        }
         val requestBuilder  = Request.Builder()
 
         if (authToken != null) {
@@ -135,7 +150,7 @@ class Crud {
 
         val request = requestBuilder
             .url(url)
-            .put(multipartBody)
+            .put(requestBody)
             .build()
 
 
