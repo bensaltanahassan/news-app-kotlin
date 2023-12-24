@@ -1,6 +1,9 @@
+import android.util.Log
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import java.io.IOException
 
 class Crud {
@@ -109,5 +112,45 @@ class Crud {
             }
         })
     }
+
+    fun putWithImage(url: String, jsonBody: String,authToken: String?,file:File, callback: ResponseCallback) {
+        val jsonMediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+        val jsonRequestBody = RequestBody.create(jsonMediaType, jsonBody)
+
+        val imageMediaType = "image/*".toMediaTypeOrNull()
+        val imageRequestBody = file.asRequestBody(imageMediaType)
+
+        val multipartBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("data", null, jsonRequestBody)
+            .addFormDataPart("file", file.name, imageRequestBody)
+            .build()
+
+        val requestBuilder  = Request.Builder()
+
+        if (authToken != null) {
+            val headerValue = "Bearer $authToken"
+            requestBuilder.addHeader("Authorization", headerValue)
+        }
+
+        val request = requestBuilder
+            .url(url)
+            .put(multipartBody)
+            .build()
+
+
+
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+                callback.onResponse(call, response)
+            }
+
+            override fun onFailure(call: Call, e: IOException) {
+                callback.onFailure(call,e)
+            }
+        })
+    }
+
 
 }

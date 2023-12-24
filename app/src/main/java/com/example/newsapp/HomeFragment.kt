@@ -93,6 +93,9 @@ class HomeFragment : Fragment() {
         listFavoris = ArrayList<Favoris>()
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         toolbar = binding.appBarHome.myToolBar
+
+
+
         //drawer menu
         toggle = ActionBarDrawerToggle(requireActivity(),binding.drawerLayout,toolbar,R.string.open,R.string.close)
         binding.drawerLayout.addDrawerListener(toggle)
@@ -101,18 +104,15 @@ class HomeFragment : Fragment() {
 
         binding.navView.setNavigationItemSelectedListener {
             when(it.itemId){
-
-
                 R.id.savedNewsPageDrawer -> {
-                    findNavController().navigate(R.id.action_homeFragment_to_savedArticlesFragment2)
+                    findNavController().navigate(R.id.action_homeFragment_to_savedArticlesFragment)
                     true
                 }
                 R.id.profilePageDrawer -> {
-
+                    findNavController().navigate(R.id.action_homeFragment_to_accountFragment)
                     true
                 }
                 R.id.logOutDrawer -> {
-                    Toast.makeText(context, "Logout", Toast.LENGTH_SHORT).show()
                     sharedPref.logout()
                     findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
                     true
@@ -120,8 +120,7 @@ class HomeFragment : Fragment() {
                 else -> false
             }
         }
-
-
+        //end drawer menu
 
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
@@ -130,13 +129,9 @@ class HomeFragment : Fragment() {
         val searchButton:View = binding.appBarHome.searchButtonHome
         binding.noNewsLayout.visibility = View.GONE
 
-        // Inside your fragment (e.g., HomeFragment or AccountFragment)
+        // Bottom nav bar settings
         val bottomNavigationView = binding.bottomNavigationView
-
-        // Determine the current destination
         val currentDestinationId = findNavController().currentDestination?.id
-
-        // Set the default item based on the current destination
         bottomNavigationView.selectedItemId = when (currentDestinationId) {
             R.id.homeFragment -> R.id.home
             R.id.accountFragment -> R.id.settings
@@ -144,7 +139,6 @@ class HomeFragment : Fragment() {
             else -> R.id.home // Set a default value or handle other cases
         }
 
-        //bottom nav-bar settings
         binding.bottomNavigationView.setOnItemSelectedListener {
             when(it.itemId){
                 R.id.home -> {
