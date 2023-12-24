@@ -125,6 +125,9 @@
             android:id="@+id/action_savedArticlesFragment_to_accountFragment"
             app:destination="@id/accountFragment" />
         <action
+            android:id="@+id/action_savedArticlesFragment_to_articleDetailsFragment"
+            app:destination="@id/articleDetailsFragment" />
+        <action
             android:id="@+id/action_savedArticlesFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
@@ -139,8 +142,5 @@
         <action
             android:id="@+id/action_accountFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
-        <action
-            android:id="@+id/action_accountFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
     </fragment>
 </navigation>
