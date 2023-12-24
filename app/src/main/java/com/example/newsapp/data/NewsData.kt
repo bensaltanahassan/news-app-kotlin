@@ -4,6 +4,7 @@ import Crud
 import android.util.Log
 import com.example.newsapp.models.Category
 import com.example.newsapp.models.News
+import com.example.newsapp.utlis.GetSingleNewsResponse
 import com.example.newsapp.utlis.ResponseAddFavoris
 import com.example.newsapp.utlis.ResponseHomeData
 import com.example.newsapp.utlis.ResponseNewsData
@@ -21,6 +22,35 @@ class NewsData {
     constructor(userId:String,token:String){
         this.userId = userId
         this.token = token
+    }
+
+
+
+    fun getSingleNews(id:String,
+                      onSuccess : (GetSingleNewsResponse) -> Unit,
+                      onFailure : (String) -> Unit
+    ){
+        val urlApi = "$baseUrl/articles/$id"
+        val userId:String = userId
+        val json = """
+            {
+                "userId": "$userId"
+            }
+        """.trimIndent()
+        val token:String = token
+        crud.get(urlApi,json,token,
+            object: Crud.ResponseCallback{
+                override fun onResponse(call: Call, response: Response) {
+                    val response = response.body?.string()
+                    val gson = Gson()
+                    val singleNewsResponse = gson.fromJson(response, GetSingleNewsResponse::class.java)
+                    onSuccess(singleNewsResponse)
+                }
+                override fun onFailure(call: Call, e: IOException) {
+                    onFailure(e.message!!)
+                }
+            }
+        )
     }
 
 
