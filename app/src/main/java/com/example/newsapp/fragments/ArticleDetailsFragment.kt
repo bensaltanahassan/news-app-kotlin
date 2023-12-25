@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.navArgs
 import com.example.newsapp.R
+import com.example.newsapp.data.NewsData
 import com.example.newsapp.data.NewsDetailsData
 import com.example.newsapp.data.RatingData
 import com.example.newsapp.databinding.FragmentArticleDetailsBinding
@@ -29,14 +30,14 @@ class ArticleDetailsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var toolbar : Toolbar
-    val args: com.example.newsapp.fragments.ArticleDetailsFragmentArgs by navArgs()
+    val args: ArticleDetailsFragmentArgs by navArgs()
     private lateinit var news:News
     private final lateinit var rateData:RatingData
     private lateinit var sharedPref: SharedPreferencesManager
     private lateinit var user: User
     private lateinit var userId:String
-    private  var token:String? = null
-    private lateinit var newsDetailsData: NewsDetailsData
+    private var token:String? = null
+    private lateinit var newsData: NewsData
     private var avgRating:Double=0.0
     private lateinit var newsDetails : News
 
@@ -49,6 +50,16 @@ class ArticleDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //Shared preferences
+        sharedPref = SharedPreferencesManager.getInstance(requireContext())
+
+        user = sharedPref.getUser()!!
+        userId = user._id
+        token = user.token
+        rateData = RatingData(userId,token!!)
+        newsData = NewsData(userId,token!!)
+
+
         _binding = FragmentArticleDetailsBinding.inflate(inflater, container, false)
         news = args.news
         toolbar = binding.appbarNewsDetail.myToolBar
@@ -56,15 +67,9 @@ class ArticleDetailsFragment : Fragment() {
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
-        sharedPref = SharedPreferencesManager.getInstance(requireContext())
 
 
-        //Shared preferences
-        user = sharedPref.getUser()!!
-        userId = user._id
-        token = user.token
-        rateData = RatingData(userId,token!!)
-        newsDetailsData = NewsDetailsData(userId,news._id,token!!)
+
 
         //set data
         getSingleNewsDetails()
@@ -96,12 +101,14 @@ class ArticleDetailsFragment : Fragment() {
             Toast.makeText(requireContext(),"Erreur lors de l'ajout de l'avis",Toast.LENGTH_SHORT).show()
         })
     }
-    fun getSingleNewsDetails(){
-        newsDetailsData.getSingleNewsDetails(onSuccess = {responseRateData ->
-            newsDetails = responseRateData.data.article
-            val rating = responseRateData.data.rating?.rating?.toFloat() ?: 0f
-            avgRating = responseRateData.data.avgRating
-            Log.d("newsDetails",responseRateData.toString())
+    private fun getSingleNewsDetails(){
+        newsData.getSingleNews(
+            news._id,
+            onSuccess = {getSingleNewsResponse ->
+            newsDetails = getSingleNewsResponse.data.article
+            val rating = getSingleNewsResponse.data.rating?.rating?.toFloat() ?: 0f
+            avgRating = getSingleNewsResponse.data.avgRating?.toDouble() ?: 0.0
+            Log.d("newsDetails",getSingleNewsResponse.toString())
             requireActivity().runOnUiThread(){
                 //set binding
                 binding.ratingBar.visibility = View.VISIBLE
