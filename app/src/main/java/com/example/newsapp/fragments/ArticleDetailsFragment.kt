@@ -14,9 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.navArgs
 import com.example.newsapp.R
+import com.example.newsapp.data.NewsDetailsData
 import com.example.newsapp.data.RatingData
 import com.example.newsapp.databinding.FragmentArticleDetailsBinding
 import com.example.newsapp.models.News
+import com.example.newsapp.models.Rate
 import com.example.newsapp.models.User
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -34,6 +36,10 @@ class ArticleDetailsFragment : Fragment() {
     private lateinit var user: User
     private lateinit var userId:String
     private  var token:String? = null
+    private lateinit var newsDetailsData: NewsDetailsData
+    private var avgRating:Double=0.0
+    private lateinit var newsDetails : News
+
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -58,39 +64,18 @@ class ArticleDetailsFragment : Fragment() {
         userId = user._id
         token = user.token
         rateData = RatingData(userId,token!!)
+        newsDetailsData = NewsDetailsData(userId,news._id,token!!)
+
+        //set data
+        getSingleNewsDetails()
 
 
-        binding.articleAuthor.text = news.author
-        binding.articleName.text = news.title
-        binding.articleContent.text = news.content
-        binding.articleDate.text = formatDate(news.createdAt)
-        //load image
-        val request = coil.request.ImageRequest.Builder(binding.imageArticleDetails.context)
-            .data(news.image.url)
-            .target(binding.imageArticleDetails)
-            .target(
-                onStart = {
-                    binding.progressBarNewsDetail.visibility = View.VISIBLE
-                },
-                onSuccess = { result ->
-                    binding.progressBarNewsDetail.visibility = View.GONE
-                    binding.imageArticleDetails.visibility = View.VISIBLE
-                    binding.imageArticleDetails.setImageDrawable(result)
-                    Log.d("succes","succes")
-                },
-                onError = { _ ->
-                    binding.progressBarNewsDetail.visibility = View.GONE
-                    binding.imageArticleDetails.visibility = View.VISIBLE
-                    Log.d("error","error in loading image")
-                }
-            ).build()
-        coil.ImageLoader(binding.imageArticleDetails.context).enqueue(request)
-
+        //handlingRating
         val ratingBar = binding.ratingBar
         ratingBar.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
-            handleRating(news._id,ratingBar.rating.toInt())
+            handleRating(newsDetails._id,ratingBar.rating.toInt())
         }
-
+        getSingleNewsDetails()
 
         return binding.root
     }
@@ -105,12 +90,55 @@ class ArticleDetailsFragment : Fragment() {
         rateData.handleRating(articleId,rating, onSuccess = {responseRateData ->
             Log.d("rating",responseRateData.toString())
             requireActivity().runOnUiThread(){
-                binding.ratingId.visibility = View.VISIBLE
-                binding.ratingId.text = responseRateData.data.rating.toString()
                 Toast.makeText(requireContext(),"Avis ajouté avec succes",Toast.LENGTH_SHORT).show()
             }
         }, onFailure = {
             Toast.makeText(requireContext(),"Erreur lors de l'ajout de l'avis",Toast.LENGTH_SHORT).show()
+        })
+    }
+    fun getSingleNewsDetails(){
+        newsDetailsData.getSingleNewsDetails(onSuccess = {responseRateData ->
+            newsDetails = responseRateData.data.article
+            val rating = responseRateData.data.rating?.rating?.toFloat() ?: 0f
+            avgRating = responseRateData.data.avgRating
+            Log.d("newsDetails",responseRateData.toString())
+            requireActivity().runOnUiThread(){
+                //set binding
+                binding.ratingBar.visibility = View.VISIBLE
+                binding.ratingId.visibility = View.VISIBLE
+                binding.articleAuthor.text = newsDetails.author
+                binding.articleName.text = newsDetails.title
+                binding.articleContent.text = newsDetails.content
+                binding.articleDate.text = formatDate(newsDetails.createdAt)
+                //load image
+                val request = coil.request.ImageRequest.Builder(binding.imageArticleDetails.context)
+                    .data(newsDetails.image.url)
+                    .target(binding.imageArticleDetails)
+                    .target(
+                        onStart = {
+                            binding.progressBarNewsDetail.visibility = View.VISIBLE
+                        },
+                        onSuccess = { result ->
+                            binding.progressBarNewsDetail.visibility = View.GONE
+                            binding.imageArticleDetails.visibility = View.VISIBLE
+                            binding.imageArticleDetails.setImageDrawable(result)
+                            Log.d("succes","succes")
+                        },
+                        onError = { _ ->
+                            binding.progressBarNewsDetail.visibility = View.GONE
+                            binding.imageArticleDetails.visibility = View.VISIBLE
+                            Log.d("error","error in loading image")
+                        }
+                    ).build()
+                coil.ImageLoader(binding.imageArticleDetails.context).enqueue(request)
+                //TODO: set rating bug
+                binding.ratingBar.rating = rating.toFloat()
+                binding.ratingId.text = avgRating.toString()
+
+
+            }
+        }, onFailure = {
+            Toast.makeText(requireContext(),"Erreur lors de la recherche d'article",Toast.LENGTH_SHORT).show()
         })
     }
 
