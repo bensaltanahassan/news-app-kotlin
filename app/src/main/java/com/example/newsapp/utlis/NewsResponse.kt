@@ -18,5 +18,5 @@ data class GetSingleNewsResponse(
 data class  SingleNewsResponse(
     val article: News,
     val rating: Rating? = null,
-    val avgRating: Int? = null,
+    val avgRating: Double? = null,
 )

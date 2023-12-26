@@ -93,10 +93,6 @@ class ArticleDetailsFragment : Fragment() {
     }
     fun handleRating (articleId:String, rating:Int){
         rateData.handleRating(articleId,rating, onSuccess = {responseRateData ->
-            Log.d("rating",responseRateData.toString())
-            requireActivity().runOnUiThread(){
-                Toast.makeText(requireContext(),"Avis ajouté avec succes",Toast.LENGTH_SHORT).show()
-            }
         }, onFailure = {
             Toast.makeText(requireContext(),"Erreur lors de l'ajout de l'avis",Toast.LENGTH_SHORT).show()
         })
