@@ -51,6 +51,7 @@ class AccountFragment : Fragment() {
 
 
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)){
             return true
@@ -66,6 +67,7 @@ class AccountFragment : Fragment() {
         //middleware login
         sharedPref = SharedPreferencesManager.getInstance(requireContext())
         user = sharedPref.getUser()!!
+
 
 
 
@@ -322,7 +324,7 @@ class AccountFragment : Fragment() {
                         }
                         ext = extension
                         bitmap = BitmapFactory.decodeStream(FileInputStream(file))
-                        avatarView.loadImage(uri.toString())
+                        avatarView.loadImage(file)
 
                         prepareToUploadImage()
 
