@@ -121,6 +121,7 @@ class AuthData {
                 val responseData = response.body?.string()
                 val responseVerifyCode = gson.fromJson(responseData, VerifyCodeResponse::class.java)
                 onSuccess(responseVerifyCode)
+                Log.d("verifyCode",responseVerifyCode.toString())
             }
             override fun onFailure(call: Call, e: IOException) {
                 onFailure(e.message!!)
