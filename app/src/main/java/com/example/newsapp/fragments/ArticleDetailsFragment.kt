@@ -64,6 +64,7 @@ class ArticleDetailsFragment : Fragment() {
         news = args.news
         toolbar = binding.appbarNewsDetail.myToolBar
         toolbar.title = news.categoryId.name
+        //TODO: Add share button handler
         setHasOptionsMenu(true)
         (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
