@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -52,6 +54,9 @@ class SavedArticlesFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_appbar_home, menu)
+    }
 
 
 
@@ -81,7 +86,7 @@ class SavedArticlesFragment : Fragment() {
         )
         binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-        binding.navView.setCheckedItem(R.id.profilePageDrawer)
+        binding.navView.setCheckedItem(R.id.savedNewsPageDrawer)
         binding.navView.getHeaderView(0).findViewById<TextView>(R.id.nameHeaderMenu).text = user.firstName + " " + user.lastName
 
 
@@ -109,6 +114,24 @@ class SavedArticlesFragment : Fragment() {
                 avatarHeaderDrawer.visibility = View.VISIBLE
             },
         )
+        binding.navView.setNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.homePageDrawer -> {
+                    findNavController().navigate(R.id.action_savedArticlesFragment_to_homeFragment)
+                    true
+                }
+                R.id.profilePageDrawer -> {
+                    findNavController().navigate(R.id.action_savedArticlesFragment_to_accountFragment)
+                    true
+                }
+                R.id.logOutDrawer -> {
+                    sharedPref.logout()
+                    findNavController().navigate(R.id.action_savedArticlesFragment_to_loginFragment)
+                    true
+                }
+                else -> false
+            }
+        }
 
 
 
@@ -147,6 +170,10 @@ class SavedArticlesFragment : Fragment() {
 
         //construct favorisData
         favorisData = FavorisData(user._id,user.token!!)
+
+
+        newArrayList = arrayListOf<News>()
+        favorisArrayList = arrayListOf<Favoris>()
         //get all saved news
         getAllSavedNews()
 
@@ -158,11 +185,8 @@ class SavedArticlesFragment : Fragment() {
 
         return binding.root
     }
-    private fun getAllSavedNews() {
+    private fun loadSavedNews() {
         val divider = MaterialDividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
-
-        newArrayList = arrayListOf<News>()
-        favorisArrayList = arrayListOf<Favoris>()
         favorisData.getAllFavoris( onSuccess = { response ->
             requireActivity().runOnUiThread {
                 binding.progressBarHome.visibility= View.GONE
@@ -204,11 +228,12 @@ class SavedArticlesFragment : Fragment() {
         val favoris = favorisArrayList.find { it.article._id == news._id }
         if (favoris != null) {
             favorisData.deleteFromFavoris(favoris, onSuccess = { response ->
-                val new = newArrayList.find { it._id == news._id }
-                newArrayList.remove(new)
                 requireActivity().runOnUiThread {
+                    // Remove the deleted item from the ArrayList
+                    favorisArrayList.remove(favoris)
+                    newArrayList.remove(news)
                     getAllSavedNews()
-                    Toast.makeText(context, "Supprimé avec succes from favoris", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Supprimé avec succes de favoris", Toast.LENGTH_SHORT).show()
                 }
 
             }, onFailure = { message ->
@@ -216,6 +241,14 @@ class SavedArticlesFragment : Fragment() {
             })
         }
 
+    }
+    private fun getAllSavedNews() {
+        // Clear existing data
+        newArrayList.clear()
+        favorisArrayList.clear()
+
+        // Reload saved news
+        loadSavedNews()
     }
 
 

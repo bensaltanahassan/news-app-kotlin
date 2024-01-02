@@ -104,7 +104,6 @@ class ArticleDetailsFragment : Fragment() {
             newsDetails = getSingleNewsResponse.data.article
             val rating = getSingleNewsResponse.data.rating?.rating?.toFloat() ?: 0f
             avgRating = getSingleNewsResponse.data.avgRating?.toDouble() ?: 0.0
-            Log.d("newsDetails",getSingleNewsResponse.toString())
             requireActivity().runOnUiThread(){
                 //set binding
                 binding.ratingBar.visibility = View.VISIBLE
@@ -125,16 +124,13 @@ class ArticleDetailsFragment : Fragment() {
                             binding.progressBarNewsDetail.visibility = View.GONE
                             binding.imageArticleDetails.visibility = View.VISIBLE
                             binding.imageArticleDetails.setImageDrawable(result)
-                            Log.d("succes","succes")
                         },
                         onError = { _ ->
                             binding.progressBarNewsDetail.visibility = View.GONE
                             binding.imageArticleDetails.visibility = View.VISIBLE
-                            Log.d("error","error in loading image")
                         }
                     ).build()
                 coil.ImageLoader(binding.imageArticleDetails.context).enqueue(request)
-                //TODO: set rating bug
                 binding.ratingBar.rating = rating.toFloat()
                 binding.ratingId.text = avgRating.toString()
 

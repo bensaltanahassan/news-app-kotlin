@@ -57,9 +57,7 @@ class HomeFragment : Fragment() {
     private lateinit var listFavoris : ArrayList<Favoris>
     private lateinit var toggle:ActionBarDrawerToggle
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_appbar_home, menu)
-    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)){
@@ -329,7 +327,7 @@ class HomeFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         val favoris = listFavoris.find { f -> f.article._id == news._id }
                         listFavoris.remove(favoris)
-                        Toast.makeText(context, "Supprimé avec succes from favoris", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Supprimé avec succes de favoris", Toast.LENGTH_SHORT).show()
                     }
                 },
                 onFailure = { error ->
@@ -347,7 +345,7 @@ class HomeFragment : Fragment() {
                     requireActivity().runOnUiThread {
                         if (responseAddFavoris.data!=null){
                             listFavoris.add(responseAddFavoris.data)
-                            Toast.makeText(context, "Ajouté avec succes to favoris", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Ajouté avec succes à favoris", Toast.LENGTH_SHORT).show()
 
                         } else{
                             Toast.makeText(context, responseAddFavoris.message, Toast.LENGTH_SHORT).show()

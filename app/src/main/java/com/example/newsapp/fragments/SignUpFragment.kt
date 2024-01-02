@@ -33,9 +33,12 @@ class SignUpFragment : Fragment() {
                 binding.signUpButton.visibility = View.GONE
                 signUp(firstName,lastName,email,password)
             }else{
-                Toast.makeText(requireContext(), "Passwords doesnt match !", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Les mots de passe doivent se rassembler !", Toast.LENGTH_LONG).show()
             }
 
+        }
+        binding.signupText.setOnClickListener{
+            findNavController().navigate(SignUpFragmentDirections.actionSignUpFragmentToLoginFragment())
         }
         return binding.root
     }
