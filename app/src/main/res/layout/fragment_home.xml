@@ -83,6 +83,8 @@
        app:itemIconSize="35dp"
        app:itemIconTint="@color/purple"
        android:layout_gravity="bottom"
+       app:labelVisibilityMode="labeled"
+
      />
 
    </LinearLayout>
