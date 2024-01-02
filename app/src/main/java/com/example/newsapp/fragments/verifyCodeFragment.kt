@@ -33,10 +33,16 @@ class verifyCodeFragment : Fragment() {
             val num4 = binding.otp4.text.toString()
             val num5 = binding.otp5.text.toString()
             val concatenatedNumber = "$num1$num2$num3$num4$num5"
-            val otpNumber = concatenatedNumber.toInt()
-            binding.progressBar.visibility = View.VISIBLE
-            binding.verifyCodeButton.visibility = View.GONE
-            verifyCode(otpNumber,email!!)
+            try {
+                val otpNumber = concatenatedNumber.toInt()
+                binding.progressBar.visibility = View.VISIBLE
+                binding.verifyCodeButton.visibility = View.GONE
+                verifyCode(otpNumber,email!!)
+            }
+            catch (e: NumberFormatException){
+                Toast.makeText(requireContext(), "Véulliez saisir un code valide", Toast.LENGTH_LONG).show()
+            }
+
         }
         return binding.root
     }

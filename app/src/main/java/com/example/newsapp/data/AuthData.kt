@@ -161,7 +161,7 @@ class AuthData {
         onSuccess: (ChangePasswordResponse) -> Unit,
         onFailure: (String) -> Unit
     ){
-        val updatePasswordUrl : String = "$baseAuth/updatepassword"
+        val updatePasswordUrl : String = "$baseAuth/changepassword"
         val json = """
             {
                 "email": "$email",
