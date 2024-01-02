@@ -72,10 +72,6 @@ class AccountFragment : Fragment() {
         //middleware login
         sharedPref = SharedPreferencesManager.getInstance(requireContext())
         user = sharedPref.getUser()!!
-
-
-
-
         usersData = UsersData(user._id,user.token!!)
 
         _binding = FragmentAccountBinding.inflate(inflater, container, false)
