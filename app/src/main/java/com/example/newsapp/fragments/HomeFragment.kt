@@ -66,6 +66,11 @@ class HomeFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_appbar_home, menu)
+    }
+
+
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreateView(
@@ -190,10 +195,9 @@ class HomeFragment : Fragment() {
 
         backButton.setOnClickListener {
             boxSearch.visibility = View.GONE
-            toolbar.title = "News App"
+            toolbar.title = "Actualités Express"
             toolbar.menu.findItem(R.id.action_search).isVisible = true
             backButton.visibility = View.GONE
-
         }
 
 
